@@ -1,0 +1,32 @@
+config MINIX_FS
+	tristate "Minix file system support"
+	depends on BLOCK
+	help
+	  Minix is a simple operating system used in many classes about OS's.
+	  Minix是一个简单的操作系统，在许多关于操作系统的课程中使用。
+	  The minix file system (method to organize files on a hard disk
+	  partition or a floppy disk) was the original file system for Linux,
+	  minix文件系统（在硬盘上组织文件的方法分区或软盘）是Linux的原始文件系统
+	  but has been superseded by the second extended file system ext2fs.
+	  但已被第二个扩展文件系统ext2fs取代。
+	  You don't want to use the minix file system on your hard disk
+	  because of certain built-in restrictions, but it is sometimes found
+	  on older Linux floppy disks.  This option will enlarge your kernel
+	  by about 28 KB. If unsure, say N.
+	  您不想使用硬盘上的minix文件系统由于某些固有的限制，但有时会发现在较旧的Linux软盘上。
+	  这个选项将扩大你的内核。大约28KB。如果不确定，就说n。
+
+	  To compile this file system support as a module, choose M here: the
+	  module will be called minix.  Note that the file system of your root
+	  partition (the one containing the directory /) cannot be compiled as
+	  a module.
+	  要将此文件系统支持编译为模块，请在此处选择m：模块将被称为minix。
+	  请注意，根目录的文件系统分区（包含目录/的分区）不能编译为一个模块
+
+config MINIX_FS_NATIVE_ENDIAN
+	def_bool MINIX_FS
+	depends on MICROBLAZE || MIPS || S390 || SUPERH || SPARC || XTENSA || (M68K && !MMU)
+
+config MINIX_FS_BIG_ENDIAN_16BIT_INDEXED
+	def_bool MINIX_FS
+	depends on M68K && MMU
