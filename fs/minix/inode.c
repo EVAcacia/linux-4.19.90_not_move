@@ -178,7 +178,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	BUILD_BUG_ON(32 != sizeof (struct minix_inode));
 	BUILD_BUG_ON(64 != sizeof(struct minix2_inode));
 
-	if (!sb_set_blocksize(s, BLOCK_SIZE))
+	if (!sb_set_blocksize(s, BLOCK_SIZE))　　//BLOCK_SIZE = 1<10     等于1024好像。
 		goto out_bad_hblock;
 
 	if (!(bh = sb_bread(s, 1)))

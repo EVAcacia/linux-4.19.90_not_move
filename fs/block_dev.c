@@ -120,15 +120,24 @@ static void set_init_blocksize(struct block_device *bdev)
 
 int set_blocksize(struct block_device *bdev, int size)
 {
-	/* Size must be a power of two, and between 512 and PAGE_SIZE */
+	/* 
+	Size must be a power of two, and between 512 and PAGE_SIZE 
+	大小必须是2的幂，并且介于512和PAGE_Size之间
+	*/
 	if (size > PAGE_SIZE || size < 512 || !is_power_of_2(size))
 		return -EINVAL;
 
-	/* Size cannot be smaller than the size supported by the device */
+	/* 
+	Size cannot be smaller than the size supported by the device 
+	大小不能小于设备支持的大小
+	*/
 	if (size < bdev_logical_block_size(bdev))
 		return -EINVAL;
 
-	/* Don't change the size if it is same as current */
+	/* 
+	Don't change the size if it is same as current 
+	如果与当前大小相同，则不更改大小
+	*/
 	if (bdev->bd_block_size != size) {
 		sync_blockdev(bdev);
 		bdev->bd_block_size = size;
@@ -145,7 +154,9 @@ int sb_set_blocksize(struct super_block *sb, int size)
 	if (set_blocksize(sb->s_bdev, size))
 		return 0;
 	/* If we get here, we know size is power of two
-	 * and it's value is between 512 and PAGE_SIZE */
+	 * and it's value is between 512 and PAGE_SIZE 
+	 如果我们到了这里，我们知道大小是2的幂。*其值介于512和PAGE_SIZE之间
+	 */
 	sb->s_blocksize = size;
 	sb->s_blocksize_bits = blksize_bits(size);
 	return sb->s_blocksize;
