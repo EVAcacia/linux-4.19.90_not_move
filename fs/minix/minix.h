@@ -25,6 +25,7 @@ struct minix_inode_info {
 
 /*
  * minix super-block data in memory
+ * 具体文件系统的超级块信息,此处表示minix文件系统的超级块信息。
  */
 struct minix_sb_info {
 	unsigned long s_ninodes;
