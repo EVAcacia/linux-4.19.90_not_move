@@ -59,15 +59,21 @@ typedef void (bh_end_io_t)(struct buffer_head *bh, int uptodate);
  * mappings (via a get_block_t call), for tracking state within
  * a page (via a page_mapping) and for wrapping bio submission
  * for backward compatibility reasons (e.g. submit_bh).
+ * ===================================================================
+ * 在历史上，缓冲区头被用来映射页面中的单个块，
+ * 当然也被用作通过文件系统和块层的I/O单元。
+ * 如今，基本的I/O单元是bio，
+ * 缓冲区\头用于提取块映射（通过get\ BUCK\ t调用）、
+ * 跟踪页内的状态（通过页\映射）以及出于向后兼容的原因包装bio提交（例如submit\ bh）
  */
 struct buffer_head {
-	unsigned long b_state;		/* buffer state bitmap (see above) */
-	struct buffer_head *b_this_page;/* circular list of page's buffers */
+	unsigned long b_state;		/* buffer state bitmap (see above) 缓冲区状态位图（见上文）*/
+	struct buffer_head *b_this_page;/* circular list of page's buffers 页面缓冲区的循环列表 */
 	struct page *b_page;		/* the page this bh is mapped to */
 
 	sector_t b_blocknr;		/* start block number */
 	size_t b_size;			/* size of mapping */
-	char *b_data;			/* pointer to data within the page */
+	char *b_data;			/* pointer to data within the page 指向页内数据的指针*/
 
 	struct block_device *b_bdev;
 	bh_end_io_t *b_end_io;		/* I/O completion */

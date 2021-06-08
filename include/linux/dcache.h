@@ -248,7 +248,7 @@ extern void shrink_dcache_parent(struct dentry *);
 extern void shrink_dcache_for_umount(struct super_block *);
 extern void d_invalidate(struct dentry *);
 
-/* only used at mount-time */
+/* only used at mount-time 仅在安装时使用*/
 extern struct dentry * d_make_root(struct inode *);
 
 /* <clickety>-<click> the ramfs-type tree */

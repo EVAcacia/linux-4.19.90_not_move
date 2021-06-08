@@ -167,6 +167,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	struct minix3_super_block *m3s = NULL;
 	unsigned long i, block;
 	struct inode *root_inode;
+	/*minix_sb_info: minix super-block data in memory*/
 	struct minix_sb_info *sbi;
 	int ret = -EINVAL;
 
@@ -185,12 +186,15 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	if (!sb_set_blocksize(s, BLOCK_SIZE))　　//BLOCK_SIZE = 1<10     等于1024好像。
 		goto out_bad_hblock;
 
-	if (!(bh = sb_bread(s, 1)))　//读取各个间接块
+	/**
+	 * 读取超级块所在的数据块。  1号扇区内容
+	*/
+	if (!(bh = sb_bread(s, 1)))
 		goto out_bad_sb;
 
 	ms = (struct minix_super_block *) bh->b_data;
-	sbi->s_ms = ms;
-	sbi->s_sbh = bh;
+	sbi->s_ms = ms; 		// minix super-block data on disk
+	sbi->s_sbh = bh;		//缓冲区头，  将超级块放入缓冲区中。
 	sbi->s_mount_state = ms->s_state;
 	sbi->s_ninodes = ms->s_ninodes;
 	sbi->s_nzones = ms->s_nzones;
@@ -243,6 +247,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 
 	/*
 	 * Allocate the buffer map to keep the superblock small.
+	 * 分配缓冲区映射以保持超级块较小。
 	 */
 	if (sbi->s_imap_blocks == 0 || sbi->s_zmap_blocks == 0)
 		goto out_illegal_sb;
@@ -271,11 +276,16 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	/* Apparently minix can create filesystems that allocate more blocks for
 	 * the bitmaps than needed.  We simply ignore that, but verify it didn't
 	 * create one with not enough blocks and bail out if so.
+	 * 显然minix可以创建文件系统，
+	 * 为位图分配比需要更多的块。
+	 * 我们只是忽略了这一点，
+	 * 但确认它没有创建一个没有足够的块和纾困，如果是这样。
 	 */
-	block = minix_blocks_needed(sbi->s_ninodes, s->s_blocksize);
+	block = minix_blocks_needed(sbi->s_ninodes, s->s_blocksize); //实现sbi->s_ninodes/s->s_blocksize向上取整
 	if (sbi->s_imap_blocks < block) {
 		printk("MINIX-fs: file system does not have enough "
 				"imap blocks allocated.  Refusing to mount.\n");
+				/*MINIX fs:文件系统没有分配足够的imap块。拒绝挂载。*/
 		goto out_no_bitmap;
 	}
 
@@ -285,26 +295,29 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	if (sbi->s_zmap_blocks < block) {
 		printk("MINIX-fs: file system does not have enough "
 				"zmap blocks allocated.  Refusing to mount.\n");
+				/*MINIX fs:文件系统没有分配足够的zmap块。拒绝挂载*/
 		goto out_no_bitmap;
 	}
 
-	/* set up enough so that it can read an inode */
+	/* set up enough so that it can read an inode
+	* 设置足够多，以便它可以读取inode
+	*/
 	s->s_op = &minix_sops;
-	root_inode = minix_iget(s, MINIX_ROOT_INO);
+	root_inode = minix_iget(s, MINIX_ROOT_INO);// read an inode.   读root根目录的inode
 	if (IS_ERR(root_inode)) {
 		ret = PTR_ERR(root_inode);
 		goto out_no_root;
 	}
 
 	ret = -ENOMEM;
-	s->s_root = d_make_root(root_inode);
+	s->s_root = d_make_root(root_inode);   //s->s_root：目录项
 	if (!s->s_root)
 		goto out_no_root;
 
 	if (!sb_rdonly(s)) {
 		if (sbi->s_version != MINIX_V3) /* s_state is now out from V3 sb */
 			ms->s_state &= ~MINIX_VALID_FS;
-		mark_buffer_dirty(bh);
+		mark_buffer_dirty(bh);//标记缓冲区脏
 	}
 	if (!(sbi->s_mount_state & MINIX_VALID_FS))
 		printk("MINIX-fs: mounting unchecked file system, "
@@ -553,6 +566,7 @@ struct inode *minix_iget(struct super_block *sb, unsigned long ino)
 
 /*
  * The minix V1 function to synchronize an inode.
+ * minix V1函数用于同步inode。
  */
 static struct buffer_head * V1_minix_update_inode(struct inode * inode)
 {

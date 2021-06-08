@@ -1598,6 +1598,9 @@ EXPORT_SYMBOL(d_invalidate);
  * Allocates a dentry. It returns %NULL if there is insufficient memory
  * available. On a success the dentry is returned. The name passed in is
  * copied and the copy passed in may be reused after this call.
+ * 分配一个dentry。
+ * 如果可用内存不足，则返回%NULL。一旦成功，就把dentry还给你。
+ * 传入的名称将被复制，并且传入的副本可在此调用后重新使用。
  */
  
 struct dentry *__d_alloc(struct super_block *sb, const struct qstr *name)
