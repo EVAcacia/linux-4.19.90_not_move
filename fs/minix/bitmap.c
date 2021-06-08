@@ -108,7 +108,7 @@ struct minix_inode *
 minix_V1_raw_inode(struct super_block *sb, ino_t ino, struct buffer_head **bh)
 {
 	int block;
-	struct minix_sb_info *sbi = minix_sb(sb);
+	struct minix_sb_info *sbi = minix_sb(sb);  //返回 s_fs_info: 指向属于具体文件系统的超级块信息.
 	struct minix_inode *p;
 
 	if (!ino || ino > sbi->s_ninodes) {
@@ -119,6 +119,11 @@ minix_V1_raw_inode(struct super_block *sb, ino_t ino, struct buffer_head **bh)
 	ino--;
 	block = 2 + sbi->s_imap_blocks + sbi->s_zmap_blocks +
 		 ino / MINIX_INODES_PER_BLOCK;
+	/**
+	 * lsh猜测函数功能： 不一定对。
+	 * 先从块缓存中查找是否存在该块，找到时直接在块缓存中修改。  
+	 * 若未找到时，从硬盘读取该块内容到块缓存中，加入到全局缓存表中。
+	*/
 	*bh = sb_bread(sb, block);
 	if (!*bh) {
 		printk("Unable to read inode block\n");

@@ -2325,11 +2325,12 @@ out:
 
 /**
  * generic_file_read_iter - generic filesystem read routine   通用文件系统读取例程
- * @iocb:	kernel I/O control block
- * @iter:	destination for the data read
+ * @iocb:	kernel I/O control block  			内核I/O控制块
+ * @iter:	destination for the data read		数据读取的目标
  *
  * This is the "read_iter()" routine for all filesystems
  * that can use the page cache directly.
+ * 这是所有文件系统的“read_iter（）”例程 可以直接使用页面缓存。
  */
 ssize_t
 generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)

@@ -647,10 +647,10 @@ struct inode {
 	unsigned long dirtied_when; /* jiffies of first dirtying */
 	unsigned long dirtied_time_when;
 
-	struct hlist_node i_hash;					/*  hash值，提高查找效率 */
-	struct list_head i_io_list; /* backing dev IO list */
+	struct hlist_node i_hash;						/*指向哈希链表的指针  hash值，提高查找效率 */
+	struct list_head i_io_list; 					/* backing dev IO list  支持设备IO列表*/
 #ifdef CONFIG_CGROUP_WRITEBACK
-	struct bdi_writeback *i_wb; /* the associated cgroup wb */
+	struct bdi_writeback *i_wb; 					/* the associated cgroup wb */
 
 	/* foreign inode detection, see wbc_detach_inode() */
 	int i_wb_frn_winner;
@@ -659,7 +659,7 @@ struct inode {
 #endif
 	struct list_head i_lru; /* inode LRU list */	/* inode LRU list 未使用的inode*/
 	struct list_head i_sb_list;						/* 链接一个文件系统中所有inode的链表 */
-	struct list_head i_wb_list; /* backing dev writeback list */
+	struct list_head i_wb_list; /* backing dev writeback list 支持设备写回列表*/
 	union {
 		struct hlist_head i_dentry;					/* 目录项链表  */
 		struct rcu_head i_rcu;

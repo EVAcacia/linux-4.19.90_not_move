@@ -183,7 +183,7 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	 * lsh: 猜测阶段：准确率不敢保证
 	 * 设置数据块大小，　不等于1024时，重新设置超级块中的大小，并写入硬盘
 	*/
-	if (!sb_set_blocksize(s, BLOCK_SIZE))　　//BLOCK_SIZE = 1<10     等于1024好像。
+	if (!sb_set_blocksize(s, BLOCK_SIZE)) 	//BLOCK_SIZE = 1<10     等于1024好像。
 		goto out_bad_hblock;
 
 	/**
@@ -479,6 +479,7 @@ void minix_set_inode(struct inode *inode, dev_t rdev)
 
 /*
  * The minix V1 function to read an inode.
+ * 此函数功能为从硬盘上读取raw inode信息，然后赋值给vfs inode中。
  */
 static struct inode *V1_minix_iget(struct inode *inode)
 {
@@ -547,6 +548,7 @@ static struct inode *V2_minix_iget(struct inode *inode)
 
 /*
  * The global function to read an inode.
+ * 用超级快和inode号
  */
 struct inode *minix_iget(struct super_block *sb, unsigned long ino)
 {
@@ -572,9 +574,12 @@ static struct buffer_head * V1_minix_update_inode(struct inode * inode)
 {
 	struct buffer_head * bh;
 	struct minix_inode * raw_inode;
-	struct minix_inode_info *minix_inode = minix_i(inode);
+	struct minix_inode_info *minix_inode = minix_i(inode); //找出该inode对应的minix_inode_info结构体指针
 	int i;
 
+	/**
+	 * minix_V1_raw_inode:此函数功能为从硬盘上读取raw inode信息，然后赋值给vfs inode中。
+	*/
 	raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh);
 	if (!raw_inode)
 		return NULL;
@@ -620,9 +625,13 @@ static struct buffer_head * V2_minix_update_inode(struct inode * inode)
 	mark_buffer_dirty(bh);
 	return bh;
 }
-
+/**
+ * 调试： 创建文件时，会调用此接口
+ * 
+*/
 static int minix_write_inode(struct inode *inode, struct writeback_control *wbc)
 {
+	printk("Author:%s | This is minix_write_inode\n",AUTHOR);
 	int err = 0;
 	struct buffer_head *bh;
 

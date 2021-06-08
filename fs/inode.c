@@ -1135,8 +1135,9 @@ EXPORT_SYMBOL(iget5_locked);
 
 /**
  * iget_locked - obtain an inode from a mounted file system
- * @sb:		super block of file system
- * @ino:	inode number to get
+ * 从挂载的文件系统中获取信息节点
+ * @sb:		super block of file system  该文件系统的超级块
+ * @ino:	inode number to get    		要获取的inode号
  *
  * Search for the inode specified by @ino in the inode cache and if present
  * return it with an increased reference count. This is for file systems

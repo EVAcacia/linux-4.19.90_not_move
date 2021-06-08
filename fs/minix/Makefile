@@ -14,8 +14,9 @@ minix-objs := bitmap.o itree_v1.o itree_v2.o namei.o inode.o file.o dir.o
 
 
 drive:
-	make -C /mnt/d/work/linux-4.19.90_not_move/ M=$(PWD) modules
+#make -C /mnt/d/work/linux-4.19.90_not_move/ M=$(PWD) modules
+	make -C  /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
-	make -C /mnt/d/work/linux-4.19.90_not_move/ M=$(PWD) clean
-	rm mkfs
+#make -C /mnt/d/work/linux-4.19.90_not_move/ M=$(PWD) clean
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean

@@ -30,10 +30,12 @@
 
 /*
  * This is the original minix inode layout on disk.
+ 这是磁盘上原来的minix inode布局。
  * Note the 8-bit gid and atime and ctime.
+ 注意8位gid、atime和ctime。
  */
 struct minix_inode {
-	__u16 i_mode;
+	__u16 i_mode;		
 	__u16 i_uid;
 	__u32 i_size;
 	__u32 i_time;
@@ -51,9 +53,9 @@ struct minix_inode {
 struct minix2_inode {
 	__u16 i_mode;
 	__u16 i_nlinks;
-	__u16 i_uid;
-	__u16 i_gid;
-	__u32 i_size;
+	__u16 i_uid;//文件拥有者的User ID
+	__u16 i_gid;//文件的Group ID
+	__u32 i_size;//文件的字节数
 	__u32 i_atime;
 	__u32 i_mtime;
 	__u32 i_ctime;
@@ -64,16 +66,16 @@ struct minix2_inode {
  * minix super-block data on disk
  */
 struct minix_super_block {
-	__u16 s_ninodes;
-	__u16 s_nzones;
-	__u16 s_imap_blocks;
-	__u16 s_zmap_blocks;
-	__u16 s_firstdatazone;
+	__u16 s_ninodes;		// inode表的元素个数
+	__u16 s_nzones;			// 数据块列表的元素个数(v1版本)
+	__u16 s_imap_blocks;	// inode位图占用的数据块数量
+	__u16 s_zmap_blocks;	// 数据块位图占用的数据块数量
+	__u16 s_firstdatazone;	// 第一个数据块起始号
 	__u16 s_log_zone_size;
-	__u32 s_max_size;
-	__u16 s_magic;
-	__u16 s_state;
-	__u32 s_zones;
+	__u32 s_max_size;		// 文件最大尺寸
+	__u16 s_magic;			// 魔数(用于识别MINIX文件系统)
+	__u16 s_state;			// 文件系统状态
+	__u32 s_zones;			// 数据块列表的元素个数(v2版本)
 };
 
 /*
