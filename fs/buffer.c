@@ -1288,7 +1288,7 @@ lookup_bh_lru(struct block_device *bdev, sector_t block, unsigned size)
 struct buffer_head *
 __find_get_block(struct block_device *bdev, sector_t block, unsigned size)
 {
-	struct buffer_head *bh = lookup_bh_lru(bdev, block, size);
+	struct buffer_head *bh = lookup_bh_lru(bdev, block, size);//检查所需数据项是否在缓存中
 
 	if (bh == NULL) {
 		/* __find_get_block_slow will mark the page accessed */
@@ -1306,9 +1306,11 @@ EXPORT_SYMBOL(__find_get_block);
  * __getblk_gfp() will locate (and, if necessary, create) the buffer_head
  * which corresponds to the passed block_device, block and size. The
  * returned buffer has its reference count incremented.
+ * _getblk\u gfp（）将定位（并在必要时创建）与传递的块设备、块和大小相对应的缓冲区\u头。返回的缓冲区的引用计数递增。
  *
  * __getblk_gfp() will lock up the machine if grow_dev_page's
  * try_to_free_buffers() attempt is failing.  FIXME, perhaps?
+ * 
  */
 struct buffer_head *
 __getblk_gfp(struct block_device *bdev, sector_t block,

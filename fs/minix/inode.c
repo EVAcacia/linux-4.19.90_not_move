@@ -178,10 +178,14 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	BUILD_BUG_ON(32 != sizeof (struct minix_inode));
 	BUILD_BUG_ON(64 != sizeof(struct minix2_inode));
 
+	/**
+	 * lsh: 猜测阶段：准确率不敢保证
+	 * 设置数据块大小，　不等于1024时，重新设置超级块中的大小，并写入硬盘
+	*/
 	if (!sb_set_blocksize(s, BLOCK_SIZE))　　//BLOCK_SIZE = 1<10     等于1024好像。
 		goto out_bad_hblock;
 
-	if (!(bh = sb_bread(s, 1)))
+	if (!(bh = sb_bread(s, 1)))　//读取各个间接块
 		goto out_bad_sb;
 
 	ms = (struct minix_super_block *) bh->b_data;

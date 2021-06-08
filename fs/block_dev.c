@@ -117,7 +117,10 @@ static void set_init_blocksize(struct block_device *bdev)
 	bdev->bd_block_size = bsize;
 	bdev->bd_inode->i_blkbits = blksize_bits(bsize);
 }
-
+/**
+ * 如果保存在s_blocksize中的文件系统块长度与最初指定的最小值并不匹配，则使用
+ * set_blocksize修改最初设置的块长度，并再次读取超级块。
+*/
 int set_blocksize(struct block_device *bdev, int size)
 {
 	/* 
@@ -477,6 +480,9 @@ int __sync_blockdev(struct block_device *bdev, int wait)
 /*
  * Write out and wait upon all the dirty data associated with a block
  * device via its mapping.  Does not take the superblock lock.
+ * 通过块设备的映射写出并等待与块设备相关的所有脏数据。
+ * 不接受超级块锁
+ * 同步文件系统所在块设备上的所有映射，这确保了数据实际写回到块设备
  */
 int sync_blockdev(struct block_device *bdev)
 {
