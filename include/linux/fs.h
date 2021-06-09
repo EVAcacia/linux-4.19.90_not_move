@@ -413,8 +413,12 @@ int pagecache_write_end(struct file *, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned copied,
 			struct page *page, void *fsdata);
 
+
+/**
+ * 地址空间的基础是address_space结构
+*/
 struct address_space {
-	struct inode *host; /* owner: inode, block_device */
+	struct inode *host; /* owner: inode, block_device  所有者：inode，或块设备 */
 	struct radix_tree_root i_pages; /* cached pages */
 	atomic_t i_mmap_writable; /* count VM_SHARED mappings */
 	struct rb_root_cached i_mmap; /* tree of private and shared mappings */
@@ -1444,11 +1448,11 @@ struct super_block {
 	struct list_head s_mounts; /* list of mounts; _not_ for fs use */
 	
 	/**
-	 * s_dev和s_bdev指定了底层文件系统的数据所在的块设备。前者使用了内核内部的编号，而后
+	* s_dev和s_bdev指定了底层文件系统的数据所在的块设备。前者使用了内核内部的编号，而后
 		者是一个指向内存中的block_device结构的指针，该结构用于更详细地定义设备操作和功能
 		（第6章更仔细地讲解了这两种类型的表示方法）
 	*/
-	struct block_device *s_bdev;　　　　　
+	struct block_device *s_bdev;
 	struct backing_dev_info *s_bdi;
 	struct mtd_info *s_mtd;
 	struct hlist_node s_instances;

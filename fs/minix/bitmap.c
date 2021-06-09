@@ -182,6 +182,9 @@ static void minix_clear_inode(struct inode *inode)
 	}
 	if (bh) {
 		mark_buffer_dirty(bh);
+		/**
+		 * 释放该缓冲区，并唤醒因等待该缓冲块而进入睡眠状态的进程。
+		*/
 		brelse (bh);
 	}
 }

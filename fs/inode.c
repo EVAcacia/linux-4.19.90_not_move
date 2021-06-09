@@ -120,7 +120,7 @@ static int no_open(struct inode *inode, struct file *file)
 }
 
 /**
- * inode_init_always - perform inode structure initialisation
+ * inode_init_always - perform inode structure initialisation 执行信息节点结构初始化
  * @sb: superblock inode belongs to
  * @inode: inode to initialise
  *
@@ -1954,6 +1954,9 @@ void __init inode_init_early(void)
 					0);
 }
 
+/**
+ * inode_hashtable: 表的初始化
+*/
 void __init inode_init(void)
 {
 	/* inode slab cache */

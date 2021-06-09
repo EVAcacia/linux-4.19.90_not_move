@@ -64,6 +64,7 @@ static struct kmem_cache * minix_inode_cachep;
 
 static struct inode *minix_alloc_inode(struct super_block *sb)
 {
+	printk("Author:%s | This is minix_alloc_inode\n",AUTHOR);
 	struct minix_inode_info *ei;
 	ei = kmem_cache_alloc(minix_inode_cachep, GFP_KERNEL);
 	if (!ei)
@@ -464,7 +465,7 @@ void minix_set_inode(struct inode *inode, dev_t rdev)
 	if (S_ISREG(inode->i_mode)) {
 		inode->i_op = &minix_file_inode_operations;
 		inode->i_fop = &minix_file_operations;
-		inode->i_mapping->a_ops = &minix_aops;
+		inode->i_mapping->a_ops = &minix_aops; //i_mapping:相关的地址映射    a_ops:address_space_operations  地址空间操作方法
 	} else if (S_ISDIR(inode->i_mode)) {
 		inode->i_op = &minix_dir_inode_operations;
 		inode->i_fop = &minix_dir_operations;
