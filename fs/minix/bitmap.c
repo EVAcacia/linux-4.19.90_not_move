@@ -104,6 +104,13 @@ unsigned long minix_count_free_blocks(struct super_block *sb)
 		<< sbi->s_log_zone_size);
 }
 
+/**
+ * @sb: 该inode的超级块
+ * @ino: 该inode的索引号
+ * @bh: buffer_head  从硬盘读出的信息先放在buffer中。
+ * 
+ * @return: 返回minix_inode
+*/
 struct minix_inode *
 minix_V1_raw_inode(struct super_block *sb, ino_t ino, struct buffer_head **bh)
 {
@@ -123,6 +130,7 @@ minix_V1_raw_inode(struct super_block *sb, ino_t ino, struct buffer_head **bh)
 	 * lsh猜测函数功能： 不一定对。
 	 * 先从块缓存中查找是否存在该块，找到时直接在块缓存中修改。  
 	 * 若未找到时，从硬盘读取该块内容到块缓存中，加入到全局缓存表中。
+	 * sb_bread：用于读取特定文件系统块的例程
 	*/
 	*bh = sb_bread(sb, block);
 	if (!*bh) {
@@ -159,15 +167,17 @@ minix_V2_raw_inode(struct super_block *sb, ino_t ino, struct buffer_head **bh)
 	return p + ino % minix2_inodes_per_block;
 }
 
-/* Clear the link count and mode of a deleted inode on disk. */
-
+/* 
+Clear the link count and mode of a deleted inode on disk. 
+清除磁盘上已删除信息节点的链接计数和模式。
+*/
 static void minix_clear_inode(struct inode *inode)
 {
 	struct buffer_head *bh = NULL;
 
 	if (INODE_VERSION(inode) == MINIX_V1) {
 		struct minix_inode *raw_inode;
-		raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh);
+		raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh);//返回硬盘指定位置的minix_inode对象。
 		if (raw_inode) {
 			raw_inode->i_nlinks = 0;
 			raw_inode->i_mode = 0;

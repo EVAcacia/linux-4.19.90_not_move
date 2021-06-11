@@ -112,6 +112,15 @@ static void destroy_inodecache(void)
 	kmem_cache_destroy(minix_inode_cachep);
 }
 
+
+/**
+ * @dirty_inode: 当 inode 被标记为脏时，VFS 会调用此方法。这是专门针对被标记为脏的 inode 本身，而不是其数据。
+ * 				如果更新需要由 fdatasync() 持久化，则 I_DIRTY_DATASYNC 将在 flags 参数中设置。
+ * @write_inode: 当 VFS 需要将 inode 写入磁盘时调用此方法。第二个参数指示写入是否应该同步，并非所有文件系统都检查此标志。
+ * @statfs:  当 VFS 需要获取文件系统统计信息时调用。
+ * @sync_fs:  VFS 写出与超级块相关的所有脏数据时调用。第二个参数指示该方法是否应该等到写出完成。可选的
+ * @put_super: 当 VFS 希望释放超级块（即卸载）时调用。
+*/
 static const struct super_operations minix_sops = {
 	.alloc_inode	= minix_alloc_inode,
 	.destroy_inode	= minix_destroy_inode,
@@ -158,7 +167,12 @@ static int minix_remount (struct super_block * sb, int * flags, char * data)
 	}
 	return 0;
 }
-//这个函数是用来与VFS交互从而生成VFS超级块的。
+/**
+ * 这个函数是用来与VFS交互从而生成VFS超级块的。
+ * @s:	超级块结构。回调必须正确初始化它。
+ * @data:	任意挂载选项，通常以 ASCII 字符串形式出现（参见“挂载选项”部分）
+ * @silent:	是否对错误保持沉默
+*/
 static int minix_fill_super(struct super_block *s, void *data, int silent)
 {
 	printk("Author:%s | This is minix minix_fill_super\n",AUTHOR);
@@ -405,7 +419,7 @@ static int minix_get_block(struct inode *inode, sector_t block,
 
 static int minix_writepage(struct page *page, struct writeback_control *wbc)
 {
-	return block_write_full_page(page, minix_get_block, wbc);
+	return block_write_full_page(page, minix_get_block, wbc);//写整页
 }
 
 static int minix_readpage(struct file *file, struct page *page)
@@ -460,6 +474,12 @@ static const struct inode_operations minix_symlink_inode_operations = {
 	.getattr	= minix_getattr,
 };
 
+/**
+ * address_space并不代表某个地址空间，
+ * 而是用于描述页高速缓存中的页面的,一个文件对应一个address_space，一个address_space与一个偏移量能够确定一个页高速缓存中的页面。
+ * i_mapping通常指向i_data,不过两者是有区别的，i_mapping表示应该向谁请求页面，i_data表示被该inode读写的页面。
+ * i_mapping成员指向该文件所在的内存空间，要访问该文件的实际内容则通过该成员访问,address_space用于管理文件映射到内存的页面。
+*/
 void minix_set_inode(struct inode *inode, dev_t rdev)
 {
 	if (S_ISREG(inode->i_mode)) {
@@ -506,6 +526,9 @@ static struct inode *V1_minix_iget(struct inode *inode)
 	inode->i_blocks = 0;
 	for (i = 0; i < 9; i++)
 		minix_inode->u.i1_data[i] = raw_inode->i_zone[i];
+	/**
+	 * minix_set_inode: 设置Inode的文件操作，文件类型，文件夹类型，链接类型，进行赋值不同的操作。
+	*/
 	minix_set_inode(inode, old_decode_dev(raw_inode->i_zone[0]));
 	brelse(bh);
 	unlock_new_inode(inode);
@@ -581,7 +604,7 @@ static struct buffer_head * V1_minix_update_inode(struct inode * inode)
 	/**
 	 * minix_V1_raw_inode:此函数功能为从硬盘上读取raw inode信息，然后赋值给vfs inode中。
 	*/
-	raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh);
+	raw_inode = minix_V1_raw_inode(inode->i_sb, inode->i_ino, &bh); //inode->i_ino: 该inode的索引节点号
 	if (!raw_inode)
 		return NULL;
 	raw_inode->i_mode = inode->i_mode;
@@ -594,6 +617,10 @@ static struct buffer_head * V1_minix_update_inode(struct inode * inode)
 		raw_inode->i_zone[0] = old_encode_dev(inode->i_rdev);
 	else for (i = 0; i < 9; i++)
 		raw_inode->i_zone[i] = minix_inode->u.i1_data[i];
+	/**
+	 * 标记此buffer_head为脏数据。
+	 * bh->data 指向raw_inode， 所以修改了raw_inode后，将bh标记为脏，加入脏数据链表中，就可以同步数据了。
+	*/
 	mark_buffer_dirty(bh);
 	return bh;
 }
@@ -682,14 +709,23 @@ void minix_truncate(struct inode * inode)
 		V2_minix_truncate(inode);
 }
 
-static struct dentry *minix_mount(struct file_system_type *fs_type,
-	int flags, const char *dev_name, void *data)
+/**
+ * @fs_type:		描述文件系统
+ * @flags:			安装标志
+ * @dev_name:		我们正在安装的设备名称; /dev/loop*   /dev/sda  这些。
+ * @data:			任意挂载选项，通常以 ASCII 字符串形式出现（参见“挂载选项”部分）
+ * 
+ * @return: 		返回调用者请求的树的根目录项。必须获取对其超级块的活动引用，并且必须锁定超级块。失败时它应该返回 ERR_PTR(error)。
+ * Usually, a filesystem uses one of the generic mount() implementations and provides a fill_super() callback instead. The generic variants are:
+ * mount_bdev: mount a filesystem residing on a block device
+*/
+static struct dentry *minix_mount(struct file_system_type *fs_type, int flags, const char *dev_name, void *data)
 {
 	/*
 	* mount_bdev是针对块设备挂载时使用的函数，此外还有mount_nodev, mount_single等函数，分别用于不同的挂载情况
 	* 过载一次,调用一次.
 	*/
-	printk("Author:%s | This is minix mount operation\n",AUTHOR);
+	printk("Author:%s | This is minix mount operation\ndev_name:%s ,data:%s\n",AUTHOR,dev_name,data);
 	/**
 	 * 该函数用数据填充一个超级块对象，如果内存中没有适当的超级块对象，数据就必须从硬盘读取
 	*/
@@ -702,11 +738,11 @@ static struct dentry *minix_mount(struct file_system_type *fs_type,
 // 同时，linux内核还定义了一个指向链表中第一个元素的全局指针file_systems
 // 和一个用来用来防止并发访问该链表的读/写自旋锁file_systems_lock。
 static struct file_system_type minix_fs_type = {
-	.owner		= THIS_MODULE,
+	.owner		= THIS_MODULE,				//对于内部 VFS 使用：在大多数情况下，您应该将其初始化为 THIS_MODULE。
 	.name		= "minix",
-	.mount		= minix_mount,
-	.kill_sb	= kill_block_super,
-	.fs_flags	= FS_REQUIRES_DEV,
+	.mount		= minix_mount,				//应挂载此文件系统的新实例时调用的方法
+	.kill_sb	= kill_block_super,			//关闭此文件系统的实例时调用的方法
+	.fs_flags	= FS_REQUIRES_DEV,			//各种标志（即 FS_REQUIRES_DEV、FS_NO_DCACHE 等）
 };
 MODULE_ALIAS_FS("minix");
 

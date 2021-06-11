@@ -1090,6 +1090,7 @@ void mark_buffer_dirty(struct buffer_head *bh)
 
 	/*
 	 * Very *carefully* optimize the it-is-already-dirty case.
+	 * 非常“小心”地优化“它已经脏了”的情况。
 	 *
 	 * Don't let the final "is it dirty" escape to before we
 	 * perhaps modified the buffer.
@@ -2920,6 +2921,7 @@ EXPORT_SYMBOL(block_truncate_page);
 
 /*
  * The generic ->writepage function for buffer-backed address_spaces
+ * 缓冲区支持的address_space的通用->writepage函数
  */
 int block_write_full_page(struct page *page, get_block_t *get_block,
 			struct writeback_control *wbc)

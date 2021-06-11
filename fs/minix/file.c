@@ -47,7 +47,10 @@ static int minix_setattr(struct dentry *dentry, struct iattr *attr)
 	mark_inode_dirty(inode);
 	return 0;
 }
-
+/**
+ * @setattr: 由 VFS 调用以设置文件的属性。此方法由 chmod(2) 和相关系统调用调用。
+ * @getattr: 由 VFS 调用以获取文件的属性。此方法由 stat(2) 和相关系统调用调用。
+*/
 const struct inode_operations minix_file_inode_operations = {
 	.setattr	= minix_setattr,
 	.getattr	= minix_getattr,

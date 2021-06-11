@@ -19,6 +19,9 @@ static int add_nondir(struct dentry *dentry, struct inode *inode)
 	return err;
 }
 
+/**
+ * 查找inode 需要VFS 调用父目录inode 的lookup() 方法,此方法由 inode 所在的特定文件系统实现安装.
+*/
 static struct dentry *minix_lookup(struct inode * dir, struct dentry *dentry, unsigned int flags)
 {
 	struct inode * inode = NULL;
@@ -255,6 +258,7 @@ out:
 
 /*
  * directories can handle most operations...
+ × 目录的inode操作操作。
  */
 const struct inode_operations minix_dir_inode_operations = {
 	.create		= minix_create,
