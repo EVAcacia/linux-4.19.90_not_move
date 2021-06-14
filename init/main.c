@@ -526,7 +526,9 @@ static void __init mm_init(void)
 	/* Should be run after espfix64 is set up. */
 	pti_init();
 }
-
+/**
+ * 内核启动，c语言启动函数，能看出来这块都是汇编
+*/
 asmlinkage __visible void __init start_kernel(void)
 {
 	char *command_line;
@@ -549,6 +551,9 @@ asmlinkage __visible void __init start_kernel(void)
 	boot_cpu_init();
 	page_address_init();
 	pr_notice("%s", linux_banner);
+	/**
+	 * setup_arch:是一个特定于体系结构的设置函数, 其中一项任务是负责初始化自举分配器
+	*/
 	setup_arch(&command_line);
 	/*
 	 * Set up the the initial canary and entropy after arch
@@ -556,7 +561,11 @@ asmlinkage __visible void __init start_kernel(void)
 	 */
 	add_latent_entropy();
 	add_device_randomness(command_line, strlen(command_line));
+	/**
+	 * boot_init_stack_canary:函数初始化堆栈保护的canary值，用来防止栈溢出攻击。
+	*/
 	boot_init_stack_canary();
+	//初始化CPU屏蔽字
 	mm_init_cpumask(&init_mm);
 	setup_command_line(command_line);
 	setup_nr_cpu_ids();
@@ -582,8 +591,15 @@ asmlinkage __visible void __init start_kernel(void)
 	/*
 	 * These use large bootmem allocations and must precede
 	 * kmem_cache_init()
+	 * 它们使用大的bootmem分配，并且必须在kmem_cache_init()调用之前
 	 */
 	setup_log_buf(0);
+	
+	/**
+	 * 目前来看：vfs_caches_init_early功能为：
+	 * 1.申请dentry哈希表空间，并初始化。
+	 * 2.申请inode哈希表空间，并初始化。
+	*/
 	vfs_caches_init_early();
 	sort_main_extable();
 	trap_init();
@@ -711,11 +727,17 @@ asmlinkage __visible void __init start_kernel(void)
 	fork_init();
 	proc_caches_init();
 	uts_ns_init();
+
+	/**
+	 * 初始化一个kmem_cache结构体。
+	*/
 	buffer_init();
 	key_init();
 	security_init();
 	dbg_late_init();
+
 	vfs_caches_init();//挂载rootfs文件系统，并创建了第一个挂载点目录：'/'；
+	
 	pagecache_init();
 	signals_init();
 	seq_file_init();

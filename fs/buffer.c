@@ -3337,12 +3337,14 @@ SYSCALL_DEFINE2(bdflush, int, func, long, data)
 
 /*
  * Buffer-head allocation
+ 缓冲头分配
  */
 static struct kmem_cache *bh_cachep __read_mostly;
 
 /*
  * Once the number of bh's in the machine exceeds this level, we start
  * stripping them in writeback.
+ * 一旦机器中的bh的数量超过这个级别，我们就开始在写回中剥离它们
  */
 static unsigned long max_buffer_heads;
 
@@ -3456,6 +3458,9 @@ void __init buffer_init(void)
 	unsigned long nrpages;
 	int ret;
 
+/**
+ * kmem_cache_create:创建新的slab缓存必须调用kmem_cache_create
+*/
 	bh_cachep = kmem_cache_create("buffer_head",
 			sizeof(struct buffer_head), 0,
 				(SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|
@@ -3467,6 +3472,10 @@ void __init buffer_init(void)
 	 */
 	nrpages = (nr_free_buffer_pages() * 10) / 100;
 	max_buffer_heads = nrpages * (PAGE_SIZE / sizeof(struct buffer_head));
+
+	/**
+	 * cpuhp_setup_state_nocalls:设置状态回调而不调用回调
+	*/
 	ret = cpuhp_setup_state_nocalls(CPUHP_FS_BUFF_DEAD, "fs/buffer:dead",
 					NULL, buffer_exit_cpu_dead);
 	WARN_ON(ret < 0);

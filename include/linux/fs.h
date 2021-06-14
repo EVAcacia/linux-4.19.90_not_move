@@ -1433,7 +1433,7 @@ struct super_block {
 	unsigned long s_flags;
 	unsigned long s_iflags; /* internal SB_I_* flags */
 	unsigned long s_magic;   /**区别于其他文件系统的标识*/
-	struct dentry *s_root;		/*指向该具体文件系统安装目录的目录项*/
+	struct dentry *s_root;		/*指向该具体文件系统安装目录的目录项，挂载点目录的dentry*/
 	struct rw_semaphore s_umount;		/*对超级块读写时进行同步*/
 	int s_count;						/*对超级块的使用计数*/
 	atomic_t s_active;					/*引用计数*/

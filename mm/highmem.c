@@ -471,7 +471,9 @@ void set_page_address(struct page *page, void *virtual)
 done:
 	return;
 }
-
+/**
+ * page_address_init:函数初始化高端内存页表池的链表 struct list_head page_address_pool变量
+*/
 void __init page_address_init(void)
 {
 	int i;

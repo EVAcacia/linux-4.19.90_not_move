@@ -80,7 +80,7 @@ struct buffer_head {
  	void *b_private;		/* reserved for b_end_io */
 	struct list_head b_assoc_buffers; /* associated with another mapping */
 	struct address_space *b_assoc_map;	/* mapping this buffer is
-						   associated with */
+						   associated with  映射于此有关联的缓冲区 */
 	atomic_t b_count;		/* users using this buffer_head */
 };
 

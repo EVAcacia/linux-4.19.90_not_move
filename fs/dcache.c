@@ -76,6 +76,7 @@ __cacheline_aligned_in_smp DEFINE_SEQLOCK(rename_lock);
 
 EXPORT_SYMBOL(rename_lock);
 
+//dentry cache
 static struct kmem_cache *dentry_cache __read_mostly;
 
 const struct qstr empty_name = QSTR_INIT("", 0);
@@ -90,10 +91,15 @@ EXPORT_SYMBOL(slash_name);
  *
  * This hash-function tries to avoid losing too many bits of hash
  * information, yet avoid using a prime hash-size or similar.
+ * 对于dcache，这是一个最关键的数据结构：用于查找的哈希表。总得有人把这件事做好-我刚刚成功了。
+ * 这个散列函数试图避免丢失过多的散列信息位，同时避免使用基本散列大小或类似大小。
  */
 
 static unsigned int d_hash_shift __read_mostly;
 
+/**
+ * dentry_hashtable:用来方便虚拟文件系统vfs快速索引dentry
+*/
 static struct hlist_bl_head *dentry_hashtable __read_mostly;
 
 static inline struct hlist_bl_head *d_hash(unsigned int hash)
@@ -3069,6 +3075,9 @@ static void __init dcache_init_early(void)
 	if (hashdist)
 		return;
 
+/**
+ * alloc_large_system_hash:是专门用于为hash表分配一块连续的内存的
+*/
 	dentry_hashtable =
 		alloc_large_system_hash("Dentry cache",
 					sizeof(struct hlist_bl_head),
@@ -3121,12 +3130,23 @@ void __init vfs_caches_init_early(void)
 	for (i = 0; i < ARRAY_SIZE(in_lookup_hashtable); i++)
 		INIT_HLIST_BL_HEAD(&in_lookup_hashtable[i]);
 
+/**
+ * 内存中缓存文件夹的链表初始化，dentry那个
+*/
 	dcache_init_early();
+/**
+ * 内存中缓存inode的链表初始化:
+ * 用来申请一个哈希表，并申请空间。
+*/
 	inode_init_early();
 }
 
 void __init vfs_caches_init(void)
 {
+
+	/**
+	 * kmem_cache_create_usercopy:只要是有经常申请释放相同大小内存的场景小，都可以创建自己的slab管理区
+	*/
 	names_cachep = kmem_cache_create_usercopy("names_cache", PATH_MAX, 0,
 			SLAB_HWCACHE_ALIGN|SLAB_PANIC, 0, PATH_MAX, NULL);
 
@@ -3135,6 +3155,6 @@ void __init vfs_caches_init(void)
 	files_init();
 	files_maxfiles_init();
 	mnt_init();
-	bdev_cache_init();
+	bdev_cache_init();//就是伪文件系统的初始过程
 	chrdev_init();
 }

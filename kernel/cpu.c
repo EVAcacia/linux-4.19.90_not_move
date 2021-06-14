@@ -2256,12 +2256,19 @@ void init_cpu_online(const struct cpumask *src)
 
 /*
  * Activate the first processor.
+ * 启动第一个处理器。
  */
 void __init boot_cpu_init(void)
 {
+	/**
+	 * 获取当前执行cpu_id。
+	*/
 	int cpu = smp_processor_id();
 
-	/* Mark the boot cpu "present", "online" etc for SMP and UP case */
+	/* 
+	* Mark the boot cpu "present", "online" etc for SMP and UP case 
+	* 标记一个目前的引导cpu
+	*/
 	set_cpu_online(cpu, true);
 	set_cpu_active(cpu, true);
 	set_cpu_present(cpu, true);

@@ -647,7 +647,7 @@ struct cdev *cdev_alloc(void)
 }
 
 /**
- * cdev_init() - initialize a cdev structure
+ * cdev_init() - initialize a cdev structure   初始化cdev结构
  * @cdev: the structure to initialize
  * @fops: the file_operations for this device
  *

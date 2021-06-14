@@ -1938,6 +1938,7 @@ void __init inode_init_early(void)
 {
 	/* If hashes are distributed across NUMA nodes, defer
 	 * hash allocation until vmalloc space is available.
+	 * 如果散列分布在NUMA节点上，则延迟散列分配，直到vmalloc空间可用。
 	 */
 	if (hashdist)
 		return;

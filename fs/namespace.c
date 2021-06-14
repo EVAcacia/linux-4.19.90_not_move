@@ -62,6 +62,10 @@ static u64 event;
 static DEFINE_IDA(mnt_id_ida);
 static DEFINE_IDA(mnt_group_ida);
 
+/**
+ * mount_hashtable:内核全局挂载点链表： 它的每个成员也是一个链表。
+ * 每个节点表示一个文件系统的挂载点。
+*/
 static struct hlist_head *mount_hashtable __read_mostly;
 static struct hlist_head *mountpoint_hashtable __read_mostly;
 static struct kmem_cache *mnt_cache __read_mostly;
@@ -967,7 +971,7 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 
 	mnt->mnt.mnt_root = root;
 	mnt->mnt.mnt_sb = root->d_sb;
-	mnt->mnt_mountpoint = mnt->mnt.mnt_root;
+	mnt->mnt_mountpoint = mnt->mnt.mnt_root;// 文件系统的根dentry
 	mnt->mnt_parent = mnt;
 	lock_mount_hash();
 	list_add_tail(&mnt->mnt_instance, &root->d_sb->s_mounts);

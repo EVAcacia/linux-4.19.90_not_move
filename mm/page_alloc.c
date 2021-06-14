@@ -7153,7 +7153,11 @@ static int page_alloc_cpu_dead(unsigned int cpu)
 void __init page_alloc_init(void)
 {
 	int ret;
-
+/**
+ *  cpuhp_setup_state_nocalls: Same as @cpuhp_setup_state except that no calls are executed are invoked
+ * during installation of this callback. NOP if SMP=n or HOTPLUG_CPU=n.
+ * page_alloc_cpu_dead: 页面分配cpu死机,啥意思。
+*/
 	ret = cpuhp_setup_state_nocalls(CPUHP_PAGE_ALLOC_DEAD,
 					"mm/page_alloc:dead", NULL,
 					page_alloc_cpu_dead);
