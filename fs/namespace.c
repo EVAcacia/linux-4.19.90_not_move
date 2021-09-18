@@ -3207,7 +3207,7 @@ static void __init init_mount_tree(void)
 	root.dentry = mnt->mnt_root;
 	mnt->mnt_flags |= MNT_LOCKED;
 
-	set_fs_pwd(current->fs, &root);
+	set_fs_pwd(current->fs, &root);//设置进程的当前路径
 	set_fs_root(current->fs, &root);
 }
 
@@ -3234,10 +3234,18 @@ void __init mnt_init(void)
 
 	kernfs_init();
 
+	/**
+	 * /sysfs  文件系统内容导出
+	*/
 	err = sysfs_init();
 	if (err)
-		printk(KERN_WARNING "%s: sysfs_init error: %d\n",
-			__func__, err);
+		printk(KERN_WARNING "%s: sysfs_init error: %d\n", __func__, err);
+
+	/**
+	 * 我们想要在自己的/lsh 文件系统中创建kobject，则需要让文件夹名以lsh开头
+	*/
+	kobject_create_and_add("lshfs", NULL);
+
 	fs_kobj = kobject_create_and_add("fs", NULL);
 	if (!fs_kobj)
 		printk(KERN_WARNING "%s: kobj create error\n", __func__);

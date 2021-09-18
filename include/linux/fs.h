@@ -1387,6 +1387,7 @@ struct sb_writers {
  * 超级块:一般该结构体信息位于具体文件系统的开始位置.
 */
 struct super_block {
+	/************描述具体文件系统的整体信息的域*****************
 	/**
 	 * 指向超级块链表的指针，这个struct list_head是很熟悉的结构了，里面其实就是用于连接关系的prev和next字段。
 	 * 内核单独使用一个简单的结构体将所有的super_block都链接起来。
@@ -1464,9 +1465,9 @@ struct super_block {
 	char s_id[32]; /* Informational name */
 	uuid_t s_uuid; /* UUID */
 
-/*
-*	s_fs_info: 指向属于具体文件系统的超级块信息.
-*/
+	/*
+	*	s_fs_info: 指向属于具体文件系统的超级块信息.
+	*/
 	void *s_fs_info; /* Filesystem private info 文件系统专用信息*/
 	unsigned int s_max_links;
 	fmode_t s_mode;

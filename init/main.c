@@ -507,13 +507,13 @@ static inline void initcall_debug_enable(void)
 #endif
 
 /*
- * Set up kernel memory allocators
+ * Set up kernel memory allocators  内存分配器
  */
 static void __init mm_init(void)
 {
 	/*
-	 * page_ext requires contiguous pages,
-	 * bigger than MAX_ORDER unless SPARSEMEM.
+	 * page_ext requires contiguous pages,  page_ext需要连续的页，
+	 * bigger than MAX_ORDER unless SPARSEMEM.   大于MAX_ORDER，除非SPARSEMEM。
 	 */
 	page_ext_init_flatmem();
 	mem_init();
@@ -675,6 +675,9 @@ asmlinkage __visible void __init start_kernel(void)
 	 * HACK ALERT! This is early. We're enabling the console before
 	 * we've done PCI setups etc, and console_init() must be aware of
 	 * this. But we do want output early, in case something goes wrong.
+	 * 我们之前启用了控制台
+	* 我们已经完成了 PCI 设置等，并且 console_init() 必须知道
+	*这个。 但是我们确实希望尽早输出，以防出现问题。
 	 */
 	console_init();
 	if (panic_later)

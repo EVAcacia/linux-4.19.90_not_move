@@ -2060,9 +2060,8 @@ static int parse_options(char *options, struct super_block *sb,
 		}
 	}
 #endif
-	if (test_opt(sb, DIOREAD_NOLOCK)) {
-		int blocksize =
-			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
+	if (test_opt(sb, DIOREAD_NOLOCK)){
+		int blocksize = BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
 
 		if (blocksize < PAGE_SIZE) {
 			ext4_msg(sb, KERN_ERR, "can't mount with "
@@ -6011,17 +6010,23 @@ static int __init ext4_init_fs(void)
 {
 	int i, err;
 
+	/**
+	 * 
+	 * ext4_mount_msg_ratelimit.interval = 30 * HZ
+	 * ext4_mount_msg_ratelimit.burst  = 64
+	*/
 	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
+	
 	ext4_li_info = NULL;
-	mutex_init(&ext4_li_mtx);
+	mutex_init(&ext4_li_mtx);//初始化互斥体
 
-	/* Build-time check for flags consistency */
+	/* Build-time check for flags consistency 构建时检查标志一致性*/
 	ext4_check_flag_values();
 
-	for (i = 0; i < EXT4_WQ_HASH_SZ; i++)
+	for (i = 0; i < EXT4_WQ_HASH_SZ; i++) //37
 		init_waitqueue_head(&ext4__ioend_wq[i]);
 
-	err = ext4_init_es();
+	err = ext4_init_es();//申请slab空间
 	if (err)
 		return err;
 

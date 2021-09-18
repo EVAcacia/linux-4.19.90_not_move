@@ -49,17 +49,21 @@ struct file_system_type *get_filesystem(struct file_system_type *fs)
 
 void put_filesystem(struct file_system_type *fs)
 {
-	module_put(fs->owner);
+	module_put(fs->owner);//将一个特定模块module的引用计数减一
 }
 
 static struct file_system_type **find_filesystem(const char *name, unsigned len)
 {
 	struct file_system_type **p;
 	for (p = &file_systems; *p; p = &(*p)->next)
-		if (strncmp((*p)->name, name, len) == 0 &&
-		    !(*p)->name[len])
+		if (strncmp((*p)->name, name, len) == 0 &&  !(*p)->name[len])
 			break;
 	return p;
+
+	/**
+	 * 查找注册的文件系统类型，没有找到就指向最后一个文件系统的->next；
+	 * 注册新的文件系统时，就会将新文件系统结构体赋值给 *p->next
+	*/
 }
 
 /**
@@ -73,6 +77,17 @@ static struct file_system_type **find_filesystem(const char *name, unsigned len)
  *	The &struct file_system_type that is passed is linked into the kernel 
  *	structures and must not be freed until the file system has been
  *	unregistered.
+
+ * register_filesystem - 注册一个新的文件系统
+  * @fs：文件系统结构
+  *
+  * 添加传递给内核的文件系统列表的文件系统
+  * 知道挂载和其他系统调用。 成功返回 0，
+  * 或错误的负 errno 代码。
+  *
+  * 传入的 &struct file_system_type 链接到内核
+  * 结构，在文件系统被释放之前不能被释放
+  * 未注册。
  */
  
 int register_filesystem(struct file_system_type * fs)

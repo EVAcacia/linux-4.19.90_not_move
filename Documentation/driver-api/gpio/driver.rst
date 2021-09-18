@@ -1,24 +1,33 @@
 ================================
 GPIO Descriptor Driver Interface
+GPIO描述符驱动程序接口
 ================================
 
 This document serves as a guide for GPIO chip drivers writers. Note that it
 describes the new descriptor-based interface. For a description of the
 deprecated integer-based GPIO interface please refer to gpio-legacy.txt.
+本文档可作为GPIO芯片驱动程序编写者的指南。请注意它描述新的基于描述符的接口的说明，
+请参见已弃用的基于整数的GPIO接口请参阅GPIO-legacy.txt。
 
 Each GPIO controller driver needs to include the following header, which defines
 the structures used to define a GPIO driver:
+每个GPIO控制器驱动程序都需要包含以下标头，其中定义了用于定义GPIO驱动程序的结构：
 
 	#include <linux/gpio/driver.h>
 
 
 Internal Representation of GPIOs
+GPIO的内部表示
 ================================
 
 Inside a GPIO driver, individual GPIOs are identified by their hardware number,
 which is a unique number between 0 and n, n being the number of GPIOs managed by
 the chip. This number is purely internal: the hardware number of a particular
 GPIO descriptor is never made visible outside of the driver.
+在GPIO驱动程序内部，各个GPIO由其硬件编号标识，
+这是一个介于0和n之间的唯一数字，n是由管理的GPIO的数量芯片。
+这个数字纯粹是内部的：一个特定的硬件编号。
+GPIO描述符永远不会在驱动程序外部可见。
 
 On top of this internal number, each GPIO also need to have a global number in
 the integer GPIO namespace so that it can be used with the legacy GPIO
@@ -26,6 +35,9 @@ interface. Each chip must thus have a "base" number (which can be automatically
 assigned), and for each GPIO the global number will be (base + hardware number).
 Although the integer representation is considered deprecated, it still has many
 users and thus needs to be maintained.
+除了这个内部编号之外，每个GPIO还需要有一个全局编号整数GPIO命名空间，以便它可以与传统GPIO一起使用接口。
+因此，每个芯片必须有一个“基本”数字（可以自动分配），并且对于每个GPIO，全局编号将是（基础+硬件编号）。
+尽管整数表示法被认为是过时的，但它仍然有许多用户，因此需要维护。
 
 So for example one platform could use numbers 32-159 for GPIOs, with a
 controller defining 128 GPIOs at a "base" of 32 ; while another platform uses

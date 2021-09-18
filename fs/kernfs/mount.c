@@ -306,6 +306,22 @@ const void *kernfs_super_ns(struct super_block *sb)
  *
  * The return value can be passed to the vfs layer verbatim.
  */
+/**
+  * kernfs_mount_ns - kernfs 挂载助手
+  * @fs_type: 被挂载的 fs 的 file_system_type
+  * @flags: 为挂载指定的挂载标志
+  * @root: 被挂载的层次结构的 kernfs_root
+  * @magic：文件系统特定的幻数
+  * @new_sb_created: 告诉调用者我们是否分配了一个新的超级块
+  * @ns: 挂载的可选命名空间标签
+  *
+  * 这将从每个 kernfs 用户的 file_system_type->mount() 调用
+  * 实现，它应该通过指定的@fs_type 和
+  * @flags，并指定要通过@root 挂载的层次结构和命名空间标记
+  * 和@ns，分别。
+  *
+  * 返回值可以逐字传递给 vfs 层。
+  */
 struct dentry *kernfs_mount_ns(struct file_system_type *fs_type, int flags,
 				struct kernfs_root *root, unsigned long magic,
 				bool *new_sb_created, const void *ns)
@@ -412,6 +428,11 @@ void __init kernfs_init(void)
 	 * can access the slab lock free. This could introduce stale nodes,
 	 * please see how kernfs_find_and_get_node_by_ino filters out stale
 	 * nodes.
+	 * 
+	 * 在 RCU 上下文中释放了板坯，因此 kernfs_find_and_get_node_by_ino
+	*可以免费访问slab锁。 这可能会引入陈旧的节点，
+	* 请查看 kernfs_find_and_get_node_by_ino 如何过滤过时
+	* 节点。
 	 */
 	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
 					      sizeof(struct kernfs_node),

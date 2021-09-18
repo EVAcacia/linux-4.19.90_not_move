@@ -751,8 +751,7 @@ static int __init init_minix_fs(void)
 	int err = init_inodecache();//申请内存
 	if (err)
 		goto out1;
-	err = register_filesystem(&minix_fs_type);
-	if (err)
+	err = register_filesystem(&minix_fs_type);k
 		goto out;
 	return 0;
 out:

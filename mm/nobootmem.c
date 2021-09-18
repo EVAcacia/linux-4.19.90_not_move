@@ -257,7 +257,16 @@ restart:
  * Allocation may happen on any node in the system.
  *
  * Return: address of the allocated region or %NULL on failure.
- */
+
+*_uuualloc_bootmem_nopanic-分配引导内存而不会惊慌失措
+*@size:请求的大小（字节）
+*@align:区域的对齐方式
+*@goal:区域首选起始地址
+*如果无法满足该目标，则放弃该目标，分配将被取消
+*回到@goal下面的记忆中。
+*分配可能发生在系统中的任何节点上。
+*返回：分配区域的地址或失败时%NULL。
+*/
 void * __init __alloc_bootmem_nopanic(unsigned long size, unsigned long align,
 					unsigned long goal)
 {

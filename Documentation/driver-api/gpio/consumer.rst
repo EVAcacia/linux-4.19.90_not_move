@@ -1,28 +1,41 @@
 ==================================
 GPIO Descriptor Consumer Interface
+GPIO描述符消费者接口
 ==================================
 
 This document describes the consumer interface of the GPIO framework. Note that
 it describes the new descriptor-based interface. For a description of the
 deprecated integer-based GPIO interface please refer to gpio-legacy.txt.
+本文描述了GPIO框架的使用者接口。请注意
+它描述了新的基于描述符的接口。关于
+不推荐使用的基于整数的GPIO接口请参阅GPIO-legacy.txt。
 
 
 Guidelines for GPIOs consumers
+GPIO消费者指南
 ==============================
 
 Drivers that can't work without standard GPIO calls should have Kconfig entries
 that depend on GPIOLIB or select GPIOLIB. The functions that allow a driver to
 obtain and use GPIOs are available by including the following file:
+没有标准GPIO调用就无法工作的驱动程序应该有Kconfig条目这取决于GPIOLIB或选择GPIOLIB。
+允许驾驶员执行以下操作的功能通过包含以下文件，可以获取和使用GPIO：
 
 	#include <linux/gpio/consumer.h>
 
 There are static inline stubs for all functions in the header file in the case
 where GPIOLIB is disabled. When these stubs are called they will emit
 warnings. These stubs are used for two use cases:
+在这种情况下，头文件中的所有函数都有静态内联存根
+其中 GPIOLIB 被禁用。 当这些存根被调用时，它们将发出
+警告。 这些存根用于两个用例：
 
 - Simple compile coverage with e.g. COMPILE_TEST - it does not matter that
   the current platform does not enable or select GPIOLIB because we are not
   going to execute the system anyway.
+简单的编译覆盖，例如 COMPILE_TEST - 没关系
+当前平台没有启用或选择 GPIOLIB 因为我们没有
+无论如何都要执行系统。
 
 - Truly optional GPIOLIB support - where the driver does not really make use
   of the GPIOs on certain compile-time configurations for certain systems, but

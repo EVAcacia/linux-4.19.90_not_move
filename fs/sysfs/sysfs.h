@@ -16,7 +16,7 @@
  * mount.c
  */
 extern struct kernfs_node *sysfs_root_kn;
-
+extern struct kernfs_node *lshfs_root_kn;
 /*
  * dir.c
  */

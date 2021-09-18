@@ -125,7 +125,7 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
 		return -ENOENT;
 	}
 
-	pdata = dev_get_platdata(&pdev->dev);
+	pdata = dev_get_platdata(&pdev->dev);//dev_get_platdata获取的是device结构体成员变量的void * platform_data
 	if (!pdata) {
 		dev_err(&pdev->dev, "no platform data specified\n");
 		return -EINVAL;

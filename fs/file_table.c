@@ -376,6 +376,8 @@ void __init files_init(void)
 /*
  * One file with associated inode and dcache is very roughly 1K. Per default
  * do not use more than 10% of our memory for files.
+ * 一个具有关联 inode 和 dcache 的文件大约为 1K。 默认情况下
+ * 不要将超过 10% 的内存用于文件。
  */
 void __init files_maxfiles_init(void)
 {

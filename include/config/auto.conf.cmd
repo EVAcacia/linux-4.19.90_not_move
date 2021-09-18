@@ -1234,7 +1234,7 @@ endif
 ifneq "$(KERNELVERSION)" "4.19.90"
 include/config/auto.conf: FORCE
 endif
-ifneq "$(CC_VERSION_TEXT)" "gcc (Debian 7.4.0-6) 7.4.0"
+ifneq "$(CC_VERSION_TEXT)" "gcc (Uos 8.3.0.3-3+rebuild) 8.3.0"
 include/config/auto.conf: FORCE
 endif
 ifneq "$(srctree)" "."

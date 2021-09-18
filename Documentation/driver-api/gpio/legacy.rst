@@ -56,6 +56,7 @@ watchdog, sensing a switch, and so on.
 
 
 GPIO conventions
+GPIO约定
 ================
 Note that this is called a "convention" because you don't need to do it this
 way, and it's no crime if you don't.  There **are** cases where portability
@@ -64,6 +65,10 @@ glue logic that may even change between board revisions, and can't ever be
 used on a board that's wired differently.  Only least-common-denominator
 functionality can be very portable.  Other features are platform-specific,
 and that can be critical for glue logic.
+请注意，这被称为“约定”，因为您不需要这样做如果你不这样做也不是犯罪。
+在***种情况下，可移植性不是主要问题；
+GPIO通常用于特定于板的类型胶合逻辑甚至可能在董事会修订之间发生变化，但永远不会发生变化在布线不同的电路板上使用。
+仅最小公分母功能可以非常便携。其他功能是特定于平台的，这对胶合逻辑来说至关重要。
 
 Plus, this doesn't require any implementation framework, just an interface.
 One platform might implement it as simple inline functions accessing chip
@@ -72,6 +77,13 @@ used for several very different kinds of GPIO controller.  (There is some
 optional code supporting such an implementation strategy, described later
 in this document, but drivers acting as clients to the GPIO interface must
 not care how it's implemented.)
+另外，这不需要任何实现框架，只需要一个接口。
+一个平台可以将其实现为访问芯片的简单内联函数登记册；
+另一个可能通过抽象授权来实现它
+用于多种不同类型的GPIO控制器(有一些
+支持这样一种实现策略的可选代码，稍后将介绍
+但作为GPIO接口的客户端的驱动程序必须
+不管它是如何实现的。）
 
 That said, if the convention is supported on their platform, drivers should
 use it when possible.  Platforms must select GPIOLIB if GPIO functionality

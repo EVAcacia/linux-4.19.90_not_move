@@ -1,14 +1,19 @@
 ============================
 Subsystem drivers using GPIO
+使用GPIO的子系统驱动程序
 ============================
 
 Note that standard kernel drivers exist for common GPIO tasks and will provide
 the right in-kernel and userspace APIs/ABIs for the job, and that these
 drivers can quite easily interconnect with other kernel subsystems using
 hardware descriptions such as device tree or ACPI:
+请注意，标准内核驱动程序用于常见的GPIO任务，
+并将提供为作业提供正确的内核和用户空间API/ABI，
+驱动程序可以很容易地与其他内核子系统互连硬件描述，如设备树或ACPI：
 
 - leds-gpio: drivers/leds/leds-gpio.c will handle LEDs connected to  GPIO
   lines, giving you the LED sysfs interface
+将处理连接到gpio的led线路，为您提供LED sysfs接口
 
 - ledtrig-gpio: drivers/leds/trigger/ledtrig-gpio.c will provide a LED trigger,
   i.e. a LED will turn on/off in response to a GPIO line going high or low

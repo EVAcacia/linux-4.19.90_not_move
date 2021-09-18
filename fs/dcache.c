@@ -3097,6 +3097,8 @@ static void __init dcache_init(void)
 	 * A constructor could be added for stable state like the lists,
 	 * but it is probably not worth it because of the cache nature
 	 * of the dcache.
+	 * 可以为稳定状态添加构造函数，例如列表，
+	 * 但由于 dcache 的缓存性质，它可能不值得。
 	 */
 	dentry_cache = KMEM_CACHE_USERCOPY(dentry,
 		SLAB_RECLAIM_ACCOUNT|SLAB_PANIC|SLAB_MEM_SPREAD|SLAB_ACCOUNT,
@@ -3131,7 +3133,7 @@ void __init vfs_caches_init_early(void)
 		INIT_HLIST_BL_HEAD(&in_lookup_hashtable[i]);
 
 /**
- * 内存中缓存文件夹的链表初始化，dentry那个
+ * 内存中缓存文件夹的链表初始化，dentry
 */
 	dcache_init_early();
 /**

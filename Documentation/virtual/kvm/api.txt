@@ -1,43 +1,64 @@
 The Definitive KVM (Kernel-based Virtual Machine) API Documentation
+权威的KVM（基于内核的虚拟机）API文档
 ===================================================================
 
 1. General description
+1. 一般说明
 ----------------------
 
 The kvm API is a set of ioctls that are issued to control various aspects
-of a virtual machine.  The ioctls belong to three classes
+of a virtual machine.  
+kvm API是一组用于控制各个方面的ioctl虚拟机的。
+The ioctls belong to three classes
 
  - System ioctls: These query and set global attributes which affect the
    whole kvm subsystem.  In addition a system ioctl is used to create
    virtual machines
+	这些查询和设置全局属性会影响整个kvm子系统
+	此外，系统ioctl用于创建虚拟机
+
 
  - VM ioctls: These query and set attributes that affect an entire virtual
    machine, for example memory layout.  In addition a VM ioctl is used to
    create virtual cpus (vcpus) and devices.
+   这些查询和设置属性会影响整个虚拟机器，例如内存布局。
+   此外，VM ioctl还用于创建虚拟cpu（vcpu）和设备。
 
    Only run VM ioctls from the same process (address space) that was used
    to create the VM.
+   仅从所使用的同一进程（地址空间）运行VM ioctl以创建虚拟机。
 
  - vcpu ioctls: These query and set attributes that control the operation
    of a single virtual cpu.
+   这些查询和设置控制操作的属性单个虚拟cpu。
 
    Only run vcpu ioctls from the same thread that was used to create the
    vcpu.
+   仅从用于创建的同一线程运行vcpu ioctls虚拟cpu。
 
  - device ioctls: These query and set attributes that control the operation
    of a single device.
+   通过这些查询和设置属性 去 控制一个设备的操作
 
    device ioctls must be issued from the same process (address space) that
    was used to create the VM.
+   设备ioctl必须从同一个进程（地址空间）发出，该进程用于创建虚拟机。
 
 2. File descriptors
 -------------------
 
-The kvm API is centered around file descriptors.  An initial
-open("/dev/kvm") obtains a handle to the kvm subsystem; this handle
-can be used to issue system ioctls.  A KVM_CREATE_VM ioctl on this
-handle will create a VM file descriptor which can be used to issue VM
-ioctls.  A KVM_CREATE_VCPU or KVM_CREATE_DEVICE ioctl on a VM fd will
+The kvm API is centered around file descriptors. 
+kvm API以文件描述符为中心。
+
+An initialopen("/dev/kvm") obtains a handle to the kvm subsystem; this handle
+can be used to issue system ioctls.  
+“/dev/kvm”）获得kvm子系统的句柄；这个把手。可用于发出系统ioctl。
+
+A KVM_CREATE_VM ioctl on thishandle will create a VM file descriptor which can be used to issue VM
+ioctls.  
+此句柄上的KVM_CREATE_VM ioctl将创建可用于发出VM的VM文件描述符ioctls。
+
+A KVM_CREATE_VCPU or KVM_CREATE_DEVICE ioctl on a VM fd will
 create a virtual cpu or device and return a file descriptor pointing to
 the new resource.  Finally, ioctls on a vcpu or device fd can be used
 to control the vcpu or device.  For vcpus, this includes the important

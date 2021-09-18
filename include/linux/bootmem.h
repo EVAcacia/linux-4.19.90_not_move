@@ -385,13 +385,13 @@ extern void *alloc_large_system_hash(const char *tablename,
 				     unsigned long low_limit,
 				     unsigned long high_limit);
 
-#define HASH_EARLY	0x00000001	/* Allocating during early boot? */
-#define HASH_SMALL	0x00000002	/* sub-page allocation allowed, min
-					 * shift passed via *_hash_shift */
-#define HASH_ZERO	0x00000004	/* Zero allocated hash table */
+#define HASH_EARLY	0x00000001	/* Allocating during early boot?  在早期引导期间进行分配？*/
+#define HASH_SMALL	0x00000002	/* sub-page allocation allowed, min shift passed via *_hash_shift 允许子页分配，通过*哈希\u移位传递最小移位*/
+#define HASH_ZERO	0x00000004	/* Zero allocated hash table  零分配哈希表*/
 
 /* Only NUMA needs hash distribution. 64bit NUMA architectures have
  * sufficient vmalloc space.
+ 只有NUMA需要散列分布。64位NUMA体系结构具有足够的vmalloc空间。
  */
 #ifdef CONFIG_NUMA
 #define HASHDIST_DEFAULT IS_ENABLED(CONFIG_64BIT)

@@ -1,5 +1,6 @@
 =============
 GPIO Mappings
+GPIO映射
 =============
 
 This document explains how GPIOs can be assigned to given devices and functions.

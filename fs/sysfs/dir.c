@@ -34,6 +34,7 @@ void sysfs_warn_dup(struct kernfs_node *parent, const char *name)
 
 /**
  * sysfs_create_dir_ns - create a directory for an object with a namespace tag
+ * 为带有命名空间标签的对象创建一个目录
  * @kobj: object we're creating directory for
  * @ns: the namespace tag to use
  */
@@ -45,10 +46,27 @@ int sysfs_create_dir_ns(struct kobject *kobj, const void *ns)
 
 	BUG_ON(!kobj);
 
+	/**
+	 * 找到接口为NULL时，为啥默认是在/sys 目录下了
+	*/
 	if (kobj->parent)
+	{
 		parent = kobj->parent->sd;
+	}
 	else
-		parent = sysfs_root_kn;
+	{
+		/**
+		 * 写个实验，如果kobject添加的文件夹名字是lsh开头的，则将文件夹创建在/lsh 虚拟文件系统中
+		*/
+		if(strncmp(kobj->name,"lsh",strlen("lsh")) == 0)
+		{
+			parent = lshfs_root_kn;
+		}
+		else
+		{
+			parent = sysfs_root_kn;
+		}
+	}
 
 	if (!parent)
 		return -ENOENT;

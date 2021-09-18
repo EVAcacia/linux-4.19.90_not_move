@@ -406,6 +406,30 @@ static __printf(3, 0) int kobject_add_varg(struct kobject *kobj,
  * up all of the necessary sysfs files for the object and then call
  * kobject_uevent() with the UEVENT_ADD parameter to ensure that
  * userspace is properly notified of this kobject's creation.
+ * 
+ * kobject_add - 主要的 kobject 添加函数
+ * @kobj: 要添加的 kobject
+ * @parent: 指向 kobject 的父对象的指针。
+ * @fmt：命名kobject的格式。
+ *
+ * kobject 名称在此设置并添加到 kobject 层次结构中
+ * 功能。
+ *
+ * 如果设置了@parent，则@kobj 的父级将设置为它。
+ * 如果@parent 为NULL，则@kobj 的父级将被设置为
+ * 与分配给此 kobject 的 kset 相关联的 kobject。如果没有 kset
+ * 被赋值给 kobject，那么 kobject 将位于
+ * sysfs 树的根。
+ *
+ * 如果此函数返回错误，则必须调用 kobject_put() 以
+ * 正确清理与对象关联的内存。
+ * 在任何情况下，传递给这个函数的 kobject 都不应该
+ * 通过调用 kfree() 直接释放，这可能会泄漏内存。
+ *
+ * 注意，此调用不会创建“添加”uevent，调用者应设置
+ * 为对象添加所有必要的 sysfs 文件，然后调用
+ * kobject_uevent() 带有 UEVENT_ADD 参数以确保
+ * 用户空间被正确通知这个 kobject 的创建。
  */
 int kobject_add(struct kobject *kobj, struct kobject *parent,
 		const char *fmt, ...)
@@ -756,6 +780,18 @@ struct kobject *kobject_create(void)
  * it is no longer being used.
  *
  * If the kobject was not able to be created, NULL will be returned.
+ * 
+ *  kobject_create_and_add - 动态创建一个 struct kobject 并将其注册到 sysfs
+  *
+  * @name: kobject 的名称
+  * @parent：这个kobject的父kobject，如果有的话。
+  *
+  * 该函数动态创建kobject结构并注册
+  * 使用 sysfs。 完成此结构后，请调用
+  * kobject_put() 并且结构将在以下情况下动态释放
+  * 它不再被使用。
+  *
+  * 如果无法创建 kobject，则返回 NULL。
  */
 struct kobject *kobject_create_and_add(const char *name, struct kobject *parent)
 {
