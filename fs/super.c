@@ -547,6 +547,13 @@ EXPORT_SYMBOL(sget_userns);
  *	@set:	  setup callback
  *	@flags:	  mount flags
  *	@data:	  argument to each of them
+
+  * sget - 查找或创建一个超级块
+  * @type: 文件系统类型超级块应该属于
+  * @test: 比较回调
+  * @set: 设置回调
+  * @flags: 挂载标志
+  * @data: 每个参数的参数
  */
 struct super_block *sget(struct file_system_type *type,
 			int (*test)(struct super_block *,void *),
@@ -559,6 +566,10 @@ struct super_block *sget(struct file_system_type *type,
 	/* We don't yet pass the user namespace of the parent
 	 * mount through to here so always use &init_user_ns
 	 * until that changes.
+	 * 
+	 * 我们还没有传递父级的用户命名空间
+	* 挂载到这里所以总是使用 &init_user_ns
+	* 直到发生变化。
 	 */
 	if (flags & SB_SUBMOUNT)
 		user_ns = &init_user_ns;

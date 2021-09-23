@@ -3888,6 +3888,11 @@ int __init shmem_init(void)
 {
 	BUG_ON(register_filesystem(&shmem_fs_type) != 0);
 
+/**
+ * kern_mount:主要用于那些没有实体介质的文件系统，
+ * 该函数主要是获取文件系统的super_block对象与根目录的inode与dentry对象，
+ * 并将这些对象加入到系统链表。
+*/
 	shm_mnt = kern_mount(&shmem_fs_type);
 	BUG_ON(IS_ERR(shm_mnt));
 

@@ -630,12 +630,17 @@ static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
 	if (!name)
 		return NULL;
 
+	//的作用和kmem_cache_alloc类似，都是从缓存中申请内存，但是这个函数会把申请到的缓存清零.
 	kn = kmem_cache_zalloc(kernfs_node_cache, GFP_KERNEL);
 	if (!kn)
 		goto err_out1;
 
-	idr_preload(GFP_KERNEL);
+	idr_preload(GFP_KERNEL);//函数用于预加载 idr。GFP_KERNEL是内核内存分配时最常用的，无内存可用时可引起休眠.
 	spin_lock(&kernfs_idr_lock);
+	/**
+	 * 如果有可用的 ID，则分配一个大于分配的最后一个 ID 的 ID。
+	 * 如果不是，它将尝试分配大于或等于 的最小 ID start。
+	*/
 	ret = idr_alloc_cyclic(&root->ino_idr, kn, 1, 0, GFP_ATOMIC);
 	if (ret >= 0 && ret < root->last_ino)
 		root->next_generation++;
@@ -945,6 +950,14 @@ struct kernfs_node *kernfs_walk_and_get_ns(struct kernfs_node *parent,
  *
  * Returns the root of the new hierarchy on success, ERR_PTR() value on
  * failure.
+ * 
+  * kernfs_create_root - 创建一个新的 kernfs 层次结构
+  * @scops：层次结构的可选系统调用操作
+  * @flags: KERNFS_ROOT_* 标志
+  * @priv：与新目录关联的不透明数据
+  *
+  * 成功时返回新层次结构的根，ERR_PTR() 值
+  * 失败。
  */
 struct kernfs_root *kernfs_create_root(struct kernfs_syscall_ops *scops,
 				       unsigned int flags, void *priv)
@@ -977,8 +990,8 @@ struct kernfs_root *kernfs_create_root(struct kernfs_syscall_ops *scops,
 	root->kn = kn;
 	init_waitqueue_head(&root->deactivate_waitq);
 
-	if (!(root->flags & KERNFS_ROOT_CREATE_DEACTIVATED))
-		kernfs_activate(kn);
+	if (!(root->flags & KERNFS_ROOT_CREATE_DEACTIVATED))// 10 & 01
+		kernfs_activate(kn);//激活该节点
 
 	return root;
 }
@@ -1006,6 +1019,17 @@ void kernfs_destroy_root(struct kernfs_root *root)
  * @ns: optional namespace tag of the directory
  *
  * Returns the created node on success, ERR_PTR() value on failure.
+ * 
+ * * kernfs_create_dir_ns - 创建一个目录
+  * @parent: 在其中创建新目录的父目录
+  * @name: 新目录的名称
+  * @mode: 新目录的模式
+  * @uid: 新目录的uid
+  * @gid: 新目录的gid
+  * @priv：与新目录关联的不透明数据
+  * @ns: 目录的可选命名空间标签
+  *
+  * 成功时返回创建的节点，失败时返回 ERR_PTR() 值。
  */
 struct kernfs_node *kernfs_create_dir_ns(struct kernfs_node *parent,
 					 const char *name, umode_t mode,
@@ -1250,6 +1274,18 @@ static struct kernfs_node *kernfs_next_descendant_post(struct kernfs_node *pos,
  *
  * The caller is responsible for ensuring that this function is not called
  * after kernfs_remove*() is invoked on @kn.
+ * 
+  * kernfs_activate - 激活一个开始停用的节点
+  * @kn: 要激活其子树的 kernfs_node
+  *
+  * 如果根设置了 KERNFS_ROOT_CREATE_DEACTIVATED，则新创建的节点
+  * 需要显式激活。 尚未激活的节点
+  * 对用户区不可见，并且在其期间跳过停用
+  * 移动。 这对于构造原子初始化序列很有用，其中
+  * 创建多个节点应该原子性地成功或失败。
+  *
+  * 调用者负责保证这个函数不被调用
+  * 在 @kn 上调用 kernfs_remove*() 之后。
  */
 void kernfs_activate(struct kernfs_node *kn)
 {

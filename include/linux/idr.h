@@ -145,6 +145,12 @@ static inline void idr_init_base(struct idr *idr, int base)
  *
  * Initialise a dynamically allocated IDR.  To initialise a
  * statically allocated IDR, use DEFINE_IDR().
+ * 
+ * idr_init() - 初始化一个 IDR。
+  * @idr：IDR 句柄。
+  *
+  * 初始化一个动态分配的 IDR。 初始化一个
+  * 静态分配的 IDR，使用 DEFINE_IDR()。
  */
 static inline void idr_init(struct idr *idr)
 {

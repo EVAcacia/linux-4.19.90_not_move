@@ -3157,6 +3157,14 @@ void __init vfs_caches_init(void)
 	files_init();
 	files_maxfiles_init();
 	mnt_init();
-	bdev_cache_init();//就是伪文件系统的初始过程
+	bdev_cache_init();//没找到这个函数，为啥是空的？
 	chrdev_init();
 }
+
+
+/**
+ * mnt_init()调用init_rootfs()注册文件系统类型rootfs_fs_type，
+ * 并加入到全局单链表file_systems中。
+ * rootfs_fs_type定义如下，mount成员函数负责超级块、根目录和索引节点的建立和初始化工作。
+ * 
+*/

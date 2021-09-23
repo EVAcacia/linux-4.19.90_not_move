@@ -609,6 +609,9 @@ static struct dentry *rootfs_mount(struct file_system_type *fs_type,
 	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
 		fill = shmem_fill_super;
 
+	/**
+	 * mount_nodev:申请一个inode，并使用fill函数调用填充。
+	*/
 	return mount_nodev(fs_type, flags, data, fill);
 }
 
@@ -627,10 +630,10 @@ int __init init_rootfs(void)
 
 	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
 		(!root_fs_names || strstr(root_fs_names, "tmpfs"))) {
-		err = shmem_init();
+		err = shmem_init();//init tmpfs
 		is_tmpfs = true;
 	} else {
-		err = init_ramfs_fs();
+		err = init_ramfs_fs(); //init ramfs
 	}
 
 	if (err)

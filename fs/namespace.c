@@ -946,6 +946,10 @@ static struct mount *skip_mnt_tree(struct mount *p)
 	return p;
 }
 
+
+/**
+ * vfs_kern_mount:准备好一个完整的mount结构
+*/
 struct vfsmount *
 vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void *data)
 {
@@ -955,7 +959,7 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 	if (!type)
 		return ERR_PTR(-ENODEV);
 
-	mnt = alloc_vfsmnt(name);
+	mnt = alloc_vfsmnt(name);/*分配一个mnt对象，并对其进行部分初始化*/
 	if (!mnt)
 		return ERR_PTR(-ENOMEM);
 
@@ -3181,6 +3185,7 @@ out0:
 	return error;
 }
 
+//安装rootfs文件系统
 static void __init init_mount_tree(void)
 {
 	struct vfsmount *mnt;
@@ -3211,6 +3216,19 @@ static void __init init_mount_tree(void)
 	set_fs_root(current->fs, &root);
 }
 
+/**
+ * 1.mnt_init()调用init_rootfs()注册文件系统类型rootfs_fs_type，
+ * 		并加入到全局单链表file_systems中。
+ * 		rootfs_fs_type定义如下，mount成员函数负责超级块、根目录和索引节点的建立和初始化工作。
+ * 
+ * 2、init_mount_tree()调用vfs_kern_mount()挂载rootfs文件系统，
+ * 		详细的挂载过程与sysfs文件系统类似，不再赘述。
+ * 3、init_mount_tree()调用create_mnt_ns()创建命名空间，
+ * 		并设置该命名空间的挂载点为rootfs的挂载点，同时将rootfs的挂载点链接到该命名空间的双向链表中。
+ * 4、init_mount_tree()设置init_task的命名空间，
+ * 		同时调用set_fs_pwd()和set_fs_root()
+ * 		设置init_task任务的当前目录和根目录为rootfs的根目录'/'。
+*/
 void __init mnt_init(void)
 {
 	int err;

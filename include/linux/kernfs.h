@@ -68,6 +68,14 @@ enum kernfs_root_flag {
 	 * respective read or write access at all (none of S_IRUGO or
 	 * S_IWUGO) or the respective operation isn't implemented.  The
 	 * following flag enables that behavior.
+	 * 
+	 * 对于普通苍蝇，如果开瓶器有 CAP_DAC_OVERRIDE，则 open(2)
+	* 无论 RW 权限如何，都会成功。 sysfs 有一个额外的
+	* 强制执行层，其中 open(2) 以 -EACCES 失败而不管
+	* CAP_DAC_OVERRIDE 如果权限没有
+	* 根本没有相应的读或写访问权限（S_IRUGO 或
+	* S_IWUGO) 或相应的操作未实现。 这
+	* 以下标志启用该行为。
 	 */
 	KERNFS_ROOT_EXTRA_OPEN_PERM_CHECK	= 0x0002,
 
@@ -125,6 +133,14 @@ union kernfs_node_id {
  * As long as s_count reference is held, the kernfs_node itself is
  * accessible.  Dereferencing elem or any other outer entity requires
  * active reference.
+ * 
+  * kernfs_node - kernfs 层次结构的构建块。 每一个
+  * kernfs 节点由单个 kernfs_node 表示。 大多数字段是
+  * kernfs 私有，不应由 kernfs 用户直接访问。
+  *
+  * 只要持有 s_count 引用，kernfs_node 本身就是
+  * 无障碍。 取消引用 elem 或任何其他外部实体需要
+  * 主动参考。
  */
 struct kernfs_node {
 	atomic_t		count;
@@ -184,13 +200,15 @@ struct kernfs_root {
 	struct kernfs_node	*kn;
 	unsigned int		flags;	/* KERNFS_ROOT_* flags */
 
-	/* private fields, do not use outside kernfs proper */
+	/* private fields, do not use outside kernfs proper
+	私有字段，不要使用适当的外部 kernfs */
 	struct idr		ino_idr;
 	u32			last_ino;
-	u32			next_generation;
+	u32			next_generation;//下一代
 	struct kernfs_syscall_ops *syscall_ops;
 
-	/* list of kernfs_super_info of this root, protected by kernfs_mutex */
+	/* list of kernfs_super_info of this root, protected by kernfs_mutex
+	此根的 kernfs_super_info 列表，受 kernfs_mutex 保护*/
 	struct list_head	supers;
 
 	wait_queue_head_t	deactivate_waitq;

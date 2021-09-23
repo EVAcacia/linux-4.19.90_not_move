@@ -25,7 +25,7 @@
 
 static inline void INIT_LIST_HEAD(struct list_head *list)
 {
-	WRITE_ONCE(list->next, list);
+	WRITE_ONCE(list->next, list);//防止编译器优化
 	list->prev = list;
 }
 
