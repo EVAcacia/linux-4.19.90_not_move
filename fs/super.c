@@ -319,6 +319,16 @@ static void put_super(struct super_block *sb)
  *	had just acquired.
  *
  *	Caller holds exclusive lock on superblock; that lock is released.
+
+  * deactivate_locked_super - 删除对超级块的活动引用
+  * @s：要停用的超级块
+  *
+  * 删除对超级块的活动引用，将其转换为临时块
+  * 如果没有其他活动引用，则为一个。 在那种情况下我们
+  * 告诉 fs 驱动程序关闭它并删除我们的临时引用
+  * 刚刚获得。
+  *
+  * 调用者对超级块持有独占锁； 那个锁被释放了。
  */
 void deactivate_locked_super(struct super_block *s)
 {

@@ -1697,6 +1697,10 @@ struct dentry *__d_alloc(struct super_block *sb, const struct qstr *name)
  * Allocates a dentry. It returns %NULL if there is insufficient memory
  * available. On a success the dentry is returned. The name passed in is
  * copied and the copy passed in may be reused after this call.
+ * 
+ ** 分配一个dentry。 如果内存不足则返回 %NULL
+  * 可用的。 成功时返回 dentry。 传入的名字是
+  * 复制，传入的副本可以在此调用后重复使用。
  */
 struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
 {
@@ -1908,6 +1912,10 @@ void d_instantiate_new(struct dentry *entry, struct inode *inode)
 }
 EXPORT_SYMBOL(d_instantiate_new);
 
+
+/**
+ * 创建根节点"/"
+*/
 struct dentry *d_make_root(struct inode *root_inode)
 {
 	struct dentry *res = NULL;

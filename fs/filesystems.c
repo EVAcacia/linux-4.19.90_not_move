@@ -34,7 +34,8 @@
 *	file_systems:指向文件系统链表的第一个元素.
 *	所有文件系统类型对象都插入到该链表中.
 */
-static struct file_system_type *file_systems; 
+//static struct file_system_type *file_systems;
+struct file_system_type *file_systems;
 /*
 *	读写自旋锁:让这个链表不能同时访问.
 */
@@ -65,6 +66,17 @@ static struct file_system_type **find_filesystem(const char *name, unsigned len)
 	 * 注册新的文件系统时，就会将新文件系统结构体赋值给 *p->next
 	*/
 }
+
+/**
+ * 将该函数提供外部调用，用来查看已经注册的文件系统
+*/
+// int printf_filesystem(void)
+// {
+// 	struct file_system_type **p;
+// 	for (p = &file_systems; *p; p = &(*p)->next)
+// 		printk("========lsh:file system:%s\n",(*p)->name);
+// }
+// EXPORT_SYMBOL(printf_filesystem);
 
 /**
  *	register_filesystem - register a new filesystem

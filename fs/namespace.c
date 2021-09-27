@@ -3196,8 +3196,8 @@ static void __init init_mount_tree(void)
 	type = get_fs_type("rootfs");
 	if (!type)
 		panic("Can't find rootfs type");
-	mnt = vfs_kern_mount(type, 0, "rootfs", NULL);
-	put_filesystem(type);
+	mnt = vfs_kern_mount(type, 0, "rootfs", NULL);//创建一个vfsmount结构
+	put_filesystem(type);//将一个特定模块module的引用计数减一
 	if (IS_ERR(mnt))
 		panic("Can't create rootfs");
 
@@ -3229,6 +3229,7 @@ static void __init init_mount_tree(void)
  * 		同时调用set_fs_pwd()和set_fs_root()
  * 		设置init_task任务的当前目录和根目录为rootfs的根目录'/'。
 */
+extern struct file_system_type *file_systems;
 void __init mnt_init(void)
 {
 	int err;
@@ -3269,6 +3270,14 @@ void __init mnt_init(void)
 		printk(KERN_WARNING "%s: kobj create error\n", __func__);
 	init_rootfs();
 	init_mount_tree();
+
+	/**
+	 * lsh add 
+	 * 查看所有注册的文件系统
+	*/
+	struct file_system_type **p;
+	for (p = &file_systems; *p; p = &(*p)->next)
+		printk("========lsh:file system:%s\n",(*p)->name);
 }
 
 void put_mnt_ns(struct mnt_namespace *ns)

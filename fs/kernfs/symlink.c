@@ -22,6 +22,14 @@
  *
  * Returns the created node on success, ERR_PTR() value on error.
  * Ownership of the link matches ownership of the target.
+ * 
+ ** kernfs_create_link - 创建一个符号链接
+  * @parent: 在其中创建符号链接的目录
+  * @name: 符号链接的名称
+  * @target: 符号链接指向的目标节点
+  *
+  * 成功时返回创建的节点，错误时返回 ERR_PTR() 值。
+  * 链接的所有权与目标的所有权相匹配。
  */
 struct kernfs_node *kernfs_create_link(struct kernfs_node *parent,
 				       const char *name,

@@ -50,6 +50,9 @@ static struct dentry *sysfs_mount(struct file_system_type *fs_type,
 }
 
 //lsh
+/**
+ * lshfs_mount: .mount成员函数负责超级块、根目录和索引节点的创建和初始化工作
+*/
 static struct dentry *lshfs_mount(struct file_system_type *fs_type,
 	int flags, const char *dev_name, void *data)
 {
@@ -103,6 +106,8 @@ static struct file_system_type lshfs_fs_type = {
 	.fs_flags	= FS_USERNS_MOUNT,
 };
 
+
+//注册并挂载sysfs文件系统，然后调用kobject_create_and_add()创建"fs"目录。
 int __init sysfs_init(void)
 {
 	int err;
