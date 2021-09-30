@@ -8,3 +8,8 @@ rmmod minix.ko
 dmesg -c
 insmod minix.ko
 mount /dev/loop7 /mnt
+
+
+
+#查看disk.raw的二进制
+hexdump -C disk.raw

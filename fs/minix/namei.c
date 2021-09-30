@@ -258,7 +258,7 @@ out:
 
 /*
  * directories can handle most operations...
- × 目录的inode操作操作。
+ * 目录的inode操作操作。
  */
 const struct inode_operations minix_dir_inode_operations = {
 	.create		= minix_create,
