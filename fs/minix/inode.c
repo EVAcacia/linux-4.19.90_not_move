@@ -479,6 +479,13 @@ static const struct inode_operations minix_symlink_inode_operations = {
  * 而是用于描述页高速缓存中的页面的,一个文件对应一个address_space，一个address_space与一个偏移量能够确定一个页高速缓存中的页面。
  * i_mapping通常指向i_data,不过两者是有区别的，i_mapping表示应该向谁请求页面，i_data表示被该inode读写的页面。
  * i_mapping成员指向该文件所在的内存空间，要访问该文件的实际内容则通过该成员访问,address_space用于管理文件映射到内存的页面。
+ * 
+S_ISREG是否是一个常规文件.
+S_ISDIR是否是一个目录
+S_ISCHR是否是一个字符设备.
+S_ISBLK是否是一个块设备
+S_ISFIFO是否是一个FIFO文件.
+S_ISSOCK是否是一个SOCKET文件. 
 */
 void minix_set_inode(struct inode *inode, dev_t rdev)
 {
@@ -727,7 +734,7 @@ static struct dentry *minix_mount(struct file_system_type *fs_type, int flags, c
 	*/
 	printk("Author:%s | This is minix mount operation\ndev_name:%s ,data:%s\n",AUTHOR,dev_name,data);
 	/**
-	 * 该函数用数据填充一个超级块对象，如果内存中没有适当的超级块对象，数据就必须从硬盘读取
+	 * 该函数用数据填充一个超级块对象，如果内存中没有适当的超级块对象，数据就必须从硬盘读取。  填充超级块对象
 	*/
 	return mount_bdev(fs_type, flags, dev_name, data, minix_fill_super);
 }

@@ -1706,6 +1706,23 @@ EXPORT_SYMBOL(blkdev_get);
  *
  * RETURNS:
  * Pointer to block_device on success, ERR_PTR(-errno) on failure.
+ * 
+ * 
+ * * blkdev_get_by_path - 按名称打开块设备
+  * @path：要打开的块设备的路径
+  * @mode: FMODE_* 掩码
+  * @holder：唯一的持有人标识符
+  *
+  * 打开@path 处的设备文件描述的块设备。 @模式
+  * 和@holder 与 blkdev_get() 相同。
+  *
+  * 成功时，返回的 block_device 的引用计数为 1。
+  *
+  * 语境：
+  * 可能会睡觉。
+  *
+  * 回报：
+  * 成功时指向block_device，失败时指向ERR_PTR(-errno)。
  */
 struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
 					void *holder)
@@ -1713,6 +1730,16 @@ struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
 	struct block_device *bdev;
 	int err;
 
+ /**
+  * @description: 
+  * 1、调用lookup_bdev函数，根据设备文件名path，查找或分配一个block_device对象，地址存入局部变量bdev中
+	2、根据flags参数设置文件系统权限为只读（FMODE_READ）或读写（FMODE_READ| FMODE_WRITE）
+	3、调用blkdev_get函数，初始化bdev中和分区、磁盘相关的数据，参见后面分析
+	4、调用bd_claim函数，更新bdev对象和其包含对象的持有者信息
+  * @param {*}
+  * @return {*}
+  * @author: lsh
+  */	
 	bdev = lookup_bdev(path);
 	if (IS_ERR(bdev))
 		return bdev;
@@ -1875,6 +1902,10 @@ void blkdev_put(struct block_device *bdev, fmode_t mode)
 	 * Trigger event checking and tell drivers to flush MEDIA_CHANGE
 	 * event.  This is to ensure detection of media removal commanded
 	 * from userland - e.g. eject(1).
+	 * 
+	* 触发事件检查并告诉驱动程序刷新 MEDIA_CHANGE
+	* 事件。 这是为了确保检测到介质移除命令
+	* 来自用户空间 - 例如 弹出（1）。
 	 */
 	disk_flush_events(bdev->bd_disk, DISK_EVENT_MEDIA_CHANGE);
 

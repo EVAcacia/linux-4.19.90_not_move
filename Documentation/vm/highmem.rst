@@ -60,6 +60,10 @@ The kernel contains several ways of creating temporary mappings:
   global synchronization, but is amortized somewhat.  It is also prone to
   deadlocks when using in a nested fashion, and so it is not recommended for
   new code.
+  这允许对单个页面进行短期映射。它需要
+全局同步，但要进行一定程度的摊销。它也容易
+以嵌套方式使用时出现死锁，因此不建议将其用于
+新代码。
 
 * kmap_atomic().  This permits a very short duration mapping of a single
   page.  Since the mapping is restricted to the CPU that issued it, it

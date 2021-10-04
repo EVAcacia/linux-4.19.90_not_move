@@ -37,6 +37,12 @@
  *
  * This operation is only valid if you already hold a reference
  * to the object, so you know the count cannot be zero.
+ * 
+ ** lockref_get - 无条件增加引用计数
+  * @lockref: 指向 lockref 结构的指针
+  *
+  * 此操作仅在您已持有引用时有效
+  * 到对象，所以你知道计数不能为零。
  */
 void lockref_get(struct lockref *lockref)
 {

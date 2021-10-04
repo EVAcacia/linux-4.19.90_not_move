@@ -1511,6 +1511,15 @@ EXPORT_SYMBOL(generic_delete_inode);
  * us to evict inode, do so.  Otherwise, retain inode
  * in cache if fs is alive, sync and evict if fs is
  * shutting down.
+ * 
+ * * 当我们删除最后一个引用时调用
+  * 到一个 inode。
+  *
+  * 调用FS“drop_inode()”函数，默认为
+  * 遗留的 UNIX 文件系统行为。 如果它告诉
+  * 我们驱逐inode，这样做。 否则，保留inode
+  * 如果 fs 处于活动状态，则在缓存中，如果 fs 处于活动状态，则同步并逐出
+  * 关闭。
  */
 static void iput_final(struct inode *inode)
 {
@@ -1556,6 +1565,14 @@ static void iput_final(struct inode *inode)
  *	zero, the inode is then freed and may also be destroyed.
  *
  *	Consequently, iput() can sleep.
+ * 
+  * iput - 放置一个 inode
+  * @inode: 要放置的 inode
+  *
+  * 放置一个 inode，减少其使用次数。 如果 inode 使用计数命中
+  * 0，inode 被释放，也可能被销毁。
+  *
+  * 因此， iput() 可以休眠。
  */
 void iput(struct inode *inode)
 {

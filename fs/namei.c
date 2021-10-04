@@ -3123,6 +3123,20 @@ static int atomic_open(struct nameidata *nd, struct dentry *dentry,
  * hadn't been specified.
  *
  * An error code is returned on failure.
+ * 
+  * 查找并可能创建并打开最后一个组件。
+  *
+  * 必须在父锁定的情况下调用（在 O_CREAT 情况下除外）。
+  *
+  * 成功返回 0，即如果
+  * 文件已成功自动创建（如有必要）并打开，或
+  * 此时文件并未完全打开，尽管进行了查找和
+  * 进行了创作。
+  * 这些情况的区别在于文件->f_mode 上是否存在 FMODE_OPENED。
+  * 在后一种情况下，如果 O_CREAT，@path 中返回的 dentry 可能为负数
+  * 未指定。
+  *
+  * 失败时返回错误代码。
  */
 static int lookup_open(struct nameidata *nd, struct path *path,
 			struct file *file,

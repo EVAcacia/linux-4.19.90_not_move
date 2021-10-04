@@ -314,6 +314,10 @@ static inline bool is_in_v2_mode(void)
  * This is ugly, but preserves the userspace API for existing cpuset
  * users. If someone tries to mount the "cpuset" filesystem, we
  * silently switch it to mount "cgroup" instead
+ * 
+ ** 这很丑陋，但保留了现有 cpuset 的用户空间 API
+  * 用户。 如果有人试图挂载“cpuset”文件系统，我们
+  * 静默切换到挂载“cgroup”
  */
 static struct dentry *cpuset_mount(struct file_system_type *fs_type,
 			 int flags, const char *unused_dev_name, void *data)

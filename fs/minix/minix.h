@@ -82,7 +82,7 @@ extern const struct file_operations minix_dir_operations;
 
 static inline struct minix_sb_info *minix_sb(struct super_block *sb)
 {
-	return sb->s_fs_info;
+	return sb->s_fs_info;//minix_sb_info结构体
 }
 
 static inline struct minix_inode_info *minix_i(struct inode *inode)

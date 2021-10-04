@@ -1149,13 +1149,14 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
 		error = -EBUSY;
 		goto error_bdev;
 	}
+	//find or create a superblock
 	s = sget(fs_type, test_bdev_super, set_bdev_super, flags | SB_NOSEC,
 		 bdev);
 	mutex_unlock(&bdev->bd_fsfreeze_mutex);
 	if (IS_ERR(s))
 		goto error_s;
 
-	if (s->s_root) {
+	if (s->s_root) { //指向该具体文件系统安装目录的目录项，挂载点目录的dentry
 		if ((flags ^ s->s_flags) & SB_RDONLY) {
 			deactivate_locked_super(s);
 			error = -EBUSY;
@@ -1168,9 +1169,16 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
 		 * bd_mutex and can't be called under s_umount.  Drop
 		 * s_umount temporarily.  This is safe as we're
 		 * holding an active reference.
+		 * 
+		 * 
+		* s_umount 在 bd_mutex 中嵌套
+		* __invalidate_device()。 blkdev_put() 获取
+		* bd_mutex 并且不能在 s_umount 下调用。 降低
+		* s_umount 暂时。 这是安全的，因为我们
+		* 持有一个活跃的引用。
 		 */
 		up_write(&s->s_umount);
-		blkdev_put(bdev, mode);
+		blkdev_put(bdev, mode);//释放上边获取到的bdev结构
 		down_write(&s->s_umount);
 	} else {
 		s->s_mode = mode;
@@ -1186,7 +1194,7 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
 		bdev->bd_super = s;
 	}
 
-	return dget(s->s_root);
+	return dget(s->s_root);//s->s_root的引用计数加1
 
 error_s:
 	error = PTR_ERR(s);
@@ -1279,6 +1287,13 @@ mount_fs(struct file_system_type *type, int flags, const char *name, void *data)
 			goto out_free_secdata;
 	}
 
+
+	/**
+	 * @description: 构造一个root dentry
+	 * @param {*}
+	 * @return {*}
+	 * @author: lsh
+	 */	
 	root = type->mount(type, flags, name, data);
 	if (IS_ERR(root)) {
 		error = PTR_ERR(root);

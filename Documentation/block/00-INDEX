@@ -4,16 +4,19 @@ bfq-iosched.txt
 	- BFQ IO scheduler and its tunables
 biodoc.txt
 	- Notes on the Generic Block Layer Rewrite in Linux 2.5
+	关于linux2.5中通用块层重写的说明
 biovecs.txt
 	- Immutable biovecs and biovec iterators
+	不可变的biovec和biovec迭代器
 capability.txt
 	- Generic Block Device Capability (/sys/block/<device>/capability)
+	通用块设备功能
 cfq-iosched.txt
 	- CFQ IO scheduler tunables
 cmdline-partition.txt
 	- how to specify block device partitions on kernel command line
-data-integrity.txt
-	- Block data integrity
+data-integrity.txt  数据完整性
+	- Block data integrity 	块数据完整性
 deadline-iosched.txt
 	- Deadline IO scheduler tunables
 ioprio.txt

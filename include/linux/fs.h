@@ -1462,7 +1462,7 @@ struct super_block {
 
 	struct sb_writers s_writers;
 
-	char s_id[32]; /* Informational name */
+	char s_id[32]; /* Informational name   信息名称*/
 	uuid_t s_uuid; /* UUID */
 
 	/*

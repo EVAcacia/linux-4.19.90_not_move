@@ -12,6 +12,14 @@
  * Unlike set_bit(), this function is non-atomic and may be reordered.
  * If it's called on the same region of memory simultaneously, the effect
  * may be that only one operation succeeds.
+ * 
+ ** __set_bit - 在内存中设置一个位
+  * @nr：要设置的位
+  * @addr: 开始计数的地址
+  *
+  * 与 set_bit() 不同，此函数是非原子的，可以重新排序。
+  * 如果在同一个内存区域同时调用，效果
+  * 可能是只有一个操作成功。
  */
 static inline void __set_bit(int nr, volatile unsigned long *addr)
 {
