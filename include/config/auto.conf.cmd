@@ -1,5 +1,6 @@
 deps_config := \
-	arch/x86/Kconfig.debug \
+	drivers/hwtracing/coresight/Kconfig \
+	arch/arm/Kconfig.debug \
 	lib/Kconfig.ubsan \
 	lib/Kconfig.kgdb \
 	samples/Kconfig \
@@ -349,7 +350,6 @@ deps_config := \
 	drivers/virt/vboxguest/Kconfig \
 	drivers/virt/Kconfig \
 	drivers/vlynq/Kconfig \
-	virt/lib/Kconfig \
 	drivers/vfio/mdev/Kconfig \
 	drivers/vfio/platform/reset/Kconfig \
 	drivers/vfio/platform/Kconfig \
@@ -1172,28 +1172,17 @@ deps_config := \
 	scripts/gcc-plugins/Kconfig \
 	kernel/gcov/Kconfig \
 	drivers/vhost/Kconfig \
+	virt/lib/Kconfig \
 	virt/kvm/Kconfig \
-	arch/x86/kvm/Kconfig \
+	arch/arm/kvm/Kconfig \
+	arch/arm/crypto/Kconfig \
 	drivers/firmware/tegra/Kconfig \
 	drivers/firmware/meson/Kconfig \
 	drivers/firmware/efi/Kconfig \
 	drivers/firmware/google/Kconfig \
 	drivers/firmware/broadcom/Kconfig \
 	drivers/firmware/Kconfig \
-	drivers/rapidio/switches/Kconfig \
-	drivers/rapidio/devices/Kconfig \
-	drivers/rapidio/Kconfig \
-	drivers/pcmcia/Kconfig \
-	drivers/eisa/Kconfig \
-	drivers/pci/switch/Kconfig \
-	drivers/pci/endpoint/functions/Kconfig \
-	drivers/pci/endpoint/Kconfig \
-	drivers/pci/controller/dwc/Kconfig \
-	drivers/pci/controller/Kconfig \
-	drivers/pci/hotplug/Kconfig \
-	drivers/pci/pcie/Kconfig \
-	drivers/pci/Kconfig \
-	drivers/idle/Kconfig \
+	kernel/power/Kconfig \
 	drivers/cpuidle/Kconfig.powerpc \
 	drivers/cpuidle/Kconfig.mips \
 	drivers/cpuidle/Kconfig.arm \
@@ -1202,19 +1191,95 @@ deps_config := \
 	drivers/cpufreq/Kconfig.arm \
 	drivers/cpufreq/Kconfig.x86 \
 	drivers/cpufreq/Kconfig \
-	drivers/sfi/Kconfig \
-	drivers/acpi/arm64/Kconfig \
-	drivers/acpi/dptf/Kconfig \
-	drivers/acpi/apei/Kconfig \
-	drivers/acpi/nfit/Kconfig \
-	drivers/acpi/Kconfig \
-	kernel/power/Kconfig \
-	kernel/livepatch/Kconfig \
-	kernel/Kconfig.hz \
-	arch/x86/events/Kconfig \
-	arch/x86/Kconfig.cpu \
-	arch/x86/xen/Kconfig \
-	arch/x86/Kconfig \
+	drivers/pcmcia/Kconfig \
+	drivers/pci/switch/Kconfig \
+	drivers/pci/endpoint/functions/Kconfig \
+	drivers/pci/endpoint/Kconfig \
+	drivers/pci/controller/dwc/Kconfig \
+	drivers/pci/controller/Kconfig \
+	drivers/pci/hotplug/Kconfig \
+	drivers/pci/pcie/Kconfig \
+	drivers/pci/Kconfig \
+	arch/arm/common/Kconfig \
+	arch/arm/Kconfig-nommu \
+	arch/arm/mm/Kconfig \
+	arch/arm/firmware/Kconfig \
+	arch/arm/mach-zynq/Kconfig \
+	arch/arm/mach-zx/Kconfig \
+	arch/arm/mach-w90x900/Kconfig \
+	arch/arm/mach-vt8500/Kconfig \
+	arch/arm/plat-versatile/Kconfig \
+	arch/arm/mach-vexpress/Kconfig \
+	arch/arm/mach-versatile/Kconfig \
+	arch/arm/mach-ux500/Kconfig \
+	arch/arm/mach-uniphier/Kconfig \
+	arch/arm/mach-u300/Kconfig \
+	arch/arm/mach-tegra/Kconfig \
+	arch/arm/mach-tango/Kconfig \
+	arch/arm/mach-sunxi/Kconfig \
+	arch/arm/mach-stm32/Kconfig \
+	arch/arm/mach-sti/Kconfig \
+	arch/arm/mach-spear/Kconfig \
+	arch/arm/mach-socfpga/Kconfig \
+	arch/arm/mach-shmobile/Kconfig \
+	arch/arm/mach-sa1100/Kconfig \
+	arch/arm/mach-s5pv210/Kconfig \
+	arch/arm/mach-s3c64xx/Kconfig \
+	arch/arm/mach-s3c24xx/Kconfig \
+	arch/arm/mach-rockchip/Kconfig \
+	arch/arm/mach-realview/Kconfig \
+	arch/arm/mach-qcom/Kconfig \
+	arch/arm/plat-pxa/Kconfig \
+	arch/arm/mach-pxa/Kconfig \
+	arch/arm/mach-prima2/Kconfig \
+	arch/arm/mach-picoxcell/Kconfig \
+	arch/arm/mach-oxnas/Kconfig \
+	arch/arm/mach-orion5x/Kconfig \
+	arch/arm/mach-omap2/Kconfig \
+	arch/arm/mach-omap1/Kconfig \
+	arch/arm/plat-omap/Kconfig \
+	arch/arm/mach-nspire/Kconfig \
+	arch/arm/mach-npcm/Kconfig \
+	arch/arm/mach-nomadik/Kconfig \
+	arch/arm/mach-netx/Kconfig \
+	arch/arm/mach-mxs/Kconfig \
+	arch/arm/mach-mvebu/Kconfig \
+	arch/arm/mach-mv78xx0/Kconfig \
+	arch/arm/mach-moxart/Kconfig \
+	arch/arm/mach-mmp/Kconfig \
+	arch/arm/mach-meson/Kconfig \
+	arch/arm/mach-mediatek/Kconfig \
+	arch/arm/mach-ks8695/Kconfig \
+	arch/arm/mach-keystone/Kconfig \
+	arch/arm/mach-ixp4xx/Kconfig \
+	arch/arm/mach-iop33x/Kconfig \
+	arch/arm/mach-iop32x/Kconfig \
+	arch/arm/mach-iop13xx/Kconfig \
+	arch/arm/mach-integrator/Kconfig \
+	arch/arm/mach-imx/devices/Kconfig \
+	arch/arm/mach-imx/Kconfig \
+	arch/arm/mach-hisi/Kconfig \
+	arch/arm/mach-highbank/Kconfig \
+	arch/arm/mach-gemini/Kconfig \
+	arch/arm/mach-footbridge/Kconfig \
+	arch/arm/plat-samsung/Kconfig \
+	arch/arm/mach-exynos/Kconfig \
+	arch/arm/mach-ep93xx/Kconfig \
+	arch/arm/mach-dove/Kconfig \
+	arch/arm/mach-digicolor/Kconfig \
+	arch/arm/mach-davinci/Kconfig \
+	arch/arm/mach-cns3xxx/Kconfig \
+	arch/arm/mach-clps711x/Kconfig \
+	arch/arm/mach-berlin/Kconfig \
+	arch/arm/mach-bcm/Kconfig \
+	arch/arm/mach-axxia/Kconfig \
+	arch/arm/mach-at91/Kconfig \
+	arch/arm/mach-aspeed/Kconfig \
+	arch/arm/mach-asm9260/Kconfig \
+	arch/arm/mach-artpec/Kconfig \
+	arch/arm/mach-alpine/Kconfig \
+	arch/arm/mach-actions/Kconfig \
+	arch/arm/Kconfig \
 	arch/Kconfig \
 	usr/Kconfig \
 	kernel/rcu/Kconfig \
@@ -1228,25 +1293,25 @@ deps_config := \
 include/config/auto.conf: \
 	$(deps_config)
 
-ifneq "$(ARCH)" "x86"
+ifneq "$(ARCH)" "arm"
 include/config/auto.conf: FORCE
 endif
 ifneq "$(KERNELVERSION)" "4.19.90"
 include/config/auto.conf: FORCE
 endif
-ifneq "$(CC_VERSION_TEXT)" "gcc (Uos 8.3.0.3-3+rebuild) 8.3.0"
+ifneq "$(CC_VERSION_TEXT)" "arm-linux-gnueabi-gcc (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
 include/config/auto.conf: FORCE
 endif
 ifneq "$(srctree)" "."
 include/config/auto.conf: FORCE
 endif
-ifneq "$(CC)" "gcc"
+ifneq "$(CC)" "arm-linux-gnueabi-gcc"
 include/config/auto.conf: FORCE
 endif
-ifneq "$(LD)" "ld"
+ifneq "$(LD)" "arm-linux-gnueabi-ld"
 include/config/auto.conf: FORCE
 endif
-ifneq "$(SRCARCH)" "x86"
+ifneq "$(SRCARCH)" "arm"
 include/config/auto.conf: FORCE
 endif
 ifneq "$(HOSTCXX)" "g++"
